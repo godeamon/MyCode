@@ -1,0 +1,57 @@
+<apex:page controller="SurveyAnswersController" tabStyle="Charket__Survey__c" sidebar="false" readOnly="true">
+    <script>
+    window.onresize = equalHeight;
+    window.onload = equalHeight;
+    function equalHeight()
+    {	
+        document.getElementById('divForm').style.width = (document.getElementById('tabBar').offsetWidth) - '10' + "px";
+    }
+    </script>
+    <apex:slds />
+    <div class="slds-page-header">
+        <div class="slds-media">
+            <div class="slds-media__body">
+                <h1 class="slds-page-header__title slds-truncate slds-align-middle">{!survey.Name}</h1>
+                <p class="slds-text-body_small slds-line-height_reset">Created By {!survey.CreatedBy.Name} , 
+                    <apex:outputField value="{!survey.CreatedDate}"/>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="slds-scrollable_x" id="divForm">
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer" >
+            <thead>
+                <tr class="slds-text-title_caps">
+                    <apex:repeat value="{!FieldsShow}" var="title">
+                        <th scope="col">
+                            <div class="slds-truncate">{!title}</div>
+                        </th>
+                    </apex:repeat>
+                    <apex:repeat value="{!SurveyQuestions}" var="question">
+                        <th scope="col">
+                            <div class="slds-truncate">{!question.Charket__Question__c}</div>
+                        </th>
+                    </apex:repeat> 
+                </tr>
+            </thead>
+            <tbody>
+                <apex:repeat value="{!WeChatFollowerAndAnswers}" var="wrapperOne">
+                    <apex:repeat value="{!wrapperOne}" var="wrapper">
+                        <tr>
+                            <apex:repeat value="{!$ObjectType.Charket__WeChatFollower__c.FieldSets.Survey_Answers}" var="field">
+                                <td>
+                                    <div class="slds-truncate">{!wrapper.WeChatFollower[field]}</div>
+                                </td>
+                            </apex:repeat>
+                            <apex:repeat value="{!wrapper.Answers}" var="answer">
+                                <td>
+                                    <div class="slds-truncate">{!if(answer == 'No_Answer', '', answer)}</div>
+                                </td>
+                            </apex:repeat>
+                        </tr>
+                    </apex:repeat>
+                </apex:repeat>
+            </tbody>
+        </table>
+    </div>
+</apex:page>

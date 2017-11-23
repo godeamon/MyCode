@@ -1,0 +1,58 @@
+<apex:page controller="DomainRecordController" tabStyle="sfLma__License__c" id="page">
+    <apex:sectionHeader title="Add Domain Record" subtitle="{!LicenseName}"/>
+    <apex:form id="form">
+        <apex:pageBlock id="thepageblock" title="Add Domain Record" mode="edit">
+            <apex:pageMessages id="showmsg"></apex:pageMessages>
+            <apex:pageBlockSection columns="2" id="pageBlockSection" title="Domain Record Information" collapsible="false" >
+                <apex:pageBlockSectionItem id="pageBlockSectionItem">
+                    <apex:outputText value="Domain Name"/>
+                    <apex:outputPanel >
+                        <apex:selectList size="1" value="{!SelectedDomainName}" id="selectList" multiselect="false" required="false">
+                            <apex:actionSupport event="onchange" action="{!confirmHostAndValue}" rerender="thepageblock"/>
+                            <apex:selectOptions value="{!DomainNames}"/>
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Type"/>
+                    <apex:selectList id="selectlist1" size="1" value="{!SelectedRecordType}">
+                        <apex:selectOptions value="{!Type}"/>
+                        <apex:actionSupport event="onchange" action="{!confirmHostAndValue}" rerender="thepageblock"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="host">
+                    <apex:outputText value="Host"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <div class="requiredBlock"></div>
+                        <apex:inputText value="{!HostRecord}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Value"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <div class="requiredBlock"></div>
+                        <apex:inputText value="{!RecordValue}" size="{!if(SelectedRecordType=='A','20','55')}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="TTL"/>
+                    <apex:selectList size="1" value="{!TimeToLive}">
+                        <apex:selectOption itemValue="5" itemLabel="5s"/>
+                        <apex:selectOption itemValue="10" itemLabel="10s"/>
+                        <apex:selectOption itemValue="60" itemLabel="1min"/>
+                        <apex:selectOption itemValue="120" itemLabel="2min"/>
+                        <apex:selectOption itemValue="600" itemLabel="10min"/>
+                        <apex:selectOption itemValue="1800" itemLabel="30min"/>
+                        <apex:selectOption itemValue="3600" itemLabel="1h"/>
+                        <apex:selectOption itemValue="43200" itemLabel="12h"/>
+                        <apex:selectOption itemValue="86400" itemLabel="24h"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Save" action="{!save}"/>
+                <apex:commandButton value="Cancel" action="{!cancel}" immediate="true"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

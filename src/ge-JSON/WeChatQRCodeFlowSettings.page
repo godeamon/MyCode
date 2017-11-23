@@ -1,0 +1,401 @@
+<apex:page controller="WeChatQRCodeFlowSettingsController" tabStyle="Charket__WeChatQRCode__c" id="page">
+    <apex:sectionHeader title="WeChat QR Code" subtitle="{!QRCodeName}"/>
+    <script type="text/javascript">
+    var templatenameid;
+    function openTemplatePopUp(field){
+        var anchortagid = field.id;
+        var index;
+        var subId;
+        if(anchortagid.length == 19)
+        {
+            index = anchortagid.substring(12,13);
+            subId = anchortagid.substring(0,3);
+        }
+        else
+        {
+            index = anchortagid.substring(9,10);
+            subId = '';
+        }
+        
+        if(index == 0){
+            templatenameid='page:form:thepageblock:pgbks1:pgbsi1:inputtext';
+            if (field != null) {
+                field.href = "JavaScript:openLookup('/_ui/common/data/LookupPage?lkfm=editPage&lknm='+templatenameid+'&lktp="+ subId + "',670,'1','&lksrch=' + escapeUTF(getElementByIdCS(templatenameid).value.substring(0, 80)))";
+            }
+        }
+        else if(index == 1){
+            templatenameid='page:form:thepageblock:pgbks2:pgbsi2:inputtext';
+            if (field != null) {
+                field.href = "JavaScript:openLookup('/_ui/common/data/LookupPage?lkfm=editPage&lknm='+templatenameid+'&lktp="+ subId + "',670,'1','&lksrch=' + escapeUTF(getElementByIdCS(templatenameid).value.substring(0, 80)))";
+            }
+        }
+        if(index == 2){
+            templatenameid='page:form:thepageblock:pgbks1:pgbsi3:inputtext';
+            if (field != null) {
+                field.href = "JavaScript:openLookup('/_ui/common/data/LookupPage?lkfm=editPage&lknm='+templatenameid+'&lktp="+ subId + "',670,'1','&lksrch=' + escapeUTF(getElementByIdCS(templatenameid).value.substring(0, 80)))";
+            }
+        }
+        else if(index == 3){
+            templatenameid='page:form:thepageblock:pgbks2:pgbsi4:inputtext';
+            if (field != null) {
+                field.href = "JavaScript:openLookup('/_ui/common/data/LookupPage?lkfm=editPage&lknm='+templatenameid+'&lktp="+ subId + "',670,'1','&lksrch=' + escapeUTF(getElementByIdCS(templatenameid).value.substring(0, 80)))";
+            }
+        }
+    }
+    </script>
+    <style>
+        .displayBG
+        {
+        border: none;
+        width: 100%;
+        height: 100%;
+        display: block;
+        position: fixed;
+        text-align: center;
+        }
+        .loadingImg
+        {
+        height: 20px;
+        width: 20px;
+        margin-top: 200px;
+        }
+    </style>
+    <apex:form id="form">
+        <apex:pageBlock id="thepageblock" title="Information" mode="edit">
+            <apex:pageBlockSection >
+                <apex:pageBlockSectionItem id="pageBlockSectionItem" helpText="选择报名或者签到">
+                    <apex:outputText value="Type"/>
+                    <apex:outputPanel >
+                        <apex:selectList size="1" value="{!RegisterOrCheckIn}">
+                            <apex:selectOption itemValue="Register" itemLabel="Register"/>
+                            <apex:selectOption itemValue="Checkin" itemLabel="Check-in"/>
+                            <apex:actionSupport event="onchange" rerender="thepageblock" status="loading"/>
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection id="pgbks2">
+                <apex:pageBlockSectionItem HelpText="表单的Banner图片链接" rendered="{!if(RegisterOrCheckIn == 'Register',true,false)}">
+                    <apex:outputText value="Form Banner"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputText value="{!FormBanner}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem HelpText="表单名称" rendered="{!if(RegisterOrCheckIn == 'Register',true,false)}">
+                    <apex:outputText value="Form Title"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputText value="{!FormTitle}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem HelpText="成功时发送给用户的WeChat Notification Template，不填则成功时不会发送任何模板消息给用户" rendered="{!if(RegisterOrCheckIn == 'Register',true,false)}" id="pgbsi2">
+                    <apex:outputText value="WeChat Notification Template"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputhidden value="{!NotificationTemplateWrapper.TempId}" id="inputtext_lkid" />
+                        <apex:inputhidden value="{!NotificationTemplateWrapper.Name}" id="inputtext_lkold" />
+                        <apex:inputText value="{!NotificationTemplateWrapper.Name}" onchange="getElementByIdCS('page:form:thepageblock:pgbks2:pgbsi2:inputtext_lkid').value='';" id="inputtext" />
+                        <a title="WeChat Notification Template(New Window)" tabindex="4" onclick="setLastMousePosition(event),openTemplatePopUp(this)" id="{!NotificationTemplateId}Template_1_lkwgt" >
+                            <img title="WeChat Notification Template(New Window)" onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';" onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';" onblur="this.className = 'lookupIcon';" class="lookupIcon" alt="Email Template Lookup (New Window)" src="/s.gif" />
+                        </a>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem helpText="成功时发送给用户的WeChat Message，WeChat Message的类型可以是图文、文本、图片、视频等，不填则成功时不会发送任何 WeChat Message给用户" rendered="{!if(RegisterOrCheckIn == 'Register',true,false)}" id="pgbsi4">
+                    <apex:outputText value="WeChat Message"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputhidden value="{!MessageWrapper.MessageId}" id="inputtext_lkid" />                 
+                        <apex:inputhidden value="{!MessageWrapper.Name}" id="inputtext_lkold" />
+                        <apex:inputText value="{!MessageWrapper.Name}" onchange="getElementByIdCS('page:form:thepageblock:pgbks2:pgbsi4:inputtext_lkid').value='';" id="inputtext" />
+                        <a title="WeChat Message(New Window)" tabindex="4" onclick="setLastMousePosition(event),openTemplatePopUp(this)" id="{!WeChatMessageId}Template_3_lkwgt" >
+                            <img title="WeChat Message(New Window)" onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';" onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';" onblur="this.className = 'lookupIcon';" class="lookupIcon" alt="Email Template Lookup (New Window)" src="/s.gif" />
+                        </a>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem helpText="成功后Campaign Member的状态，不填则默认更新为Responded">
+                    <apex:outputText value="Campaign Member Status"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:selectList size="1" value="{!CampaignMemberStatus}">
+                            <apex:selectOptions value="{!CampaignMemberStatusSelectOptions}"></apex:selectOptions>
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}">
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}" helpText="已经签到成功的用户再次扫描二维码时的提示">
+                    <apex:outputText value="Attendee Rescan Response"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputTextarea value="{!HasSuccess}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}"/>
+                <apex:pageBlockSectionItem rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}"/>
+                <apex:pageBlockSectionItem rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}"/>
+                <apex:pageBlockSectionItem rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}">
+                    <apex:outputLabel value="" for="selectedStatus"/>
+                    <apex:outputPanel >
+                        <apex:inputCheckbox value="{!IsAllowSelectStatus}" id="selectedStatus">
+                            <apex:actionsupport event="onclick" rerender="form" status="StatusId"/>
+                        </apex:inputCheckbox>
+                        <apex:outputText value="Allow only members have the selected statuses to check in" style="text-align: right;font-size: 91%;font-weight: bold;color: #4a4a56;"/>
+                        <apex:actionStatus id="StatusId" >
+                            <apex:facet name="start" >
+                                <img src="/img/loading.gif" />                    
+                            </apex:facet>
+                        </apex:actionStatus>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!if(RegisterOrCheckIn == 'Register' || !IsAllowSelectStatus,false,true)}">
+                    <apex:outputText value="Response Message"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputTextarea value="{!ResponseMessage}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection rendered="{!IsAllowSelectStatus}" >
+                <apex:repeat value="{!StatusMap}" var="status">
+                    <apex:pageBlockSectionItem rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}">
+                        <apex:outputLabel value="" for="Status"/>
+                        <apex:outputPanel >
+                            <apex:inputCheckbox value="{!StatusMap[status]}" id="Status"/>
+                            <apex:outputText value="{!status}" style="text-align: right;font-size: 91%;font-weight: bold;color: #4a4a56;"/>
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem rendered="{!if(RegisterOrCheckIn == 'Register' && IsAllowSelectStatus,false,true)}">
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection id="pageBlockSection" columns="2" showHeader="{!if(RegisterOrCheckIn == 'Register',false,true)}" title="Steps" collapsible="false" rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Enter Phone" for="EnterPhoneConfirmCheckbox"/>
+                    <apex:outputPanel >
+                        <apex:inputCheckbox value="{!IsEnterPhone}" id="EnterPhoneConfirmCheckbox"/>
+                        <apex:actionsupport event="onclick" rerender="form" status="StatusId"/>
+                        <apex:actionStatus id="StatusId" >
+                            <apex:facet name="start" >
+                                <img src="/img/loading.gif" />                    
+                            </apex:facet>
+                        </apex:actionStatus>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IsEnterPhone}">
+                    <apex:outputText value="Question"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputTextarea value="{!EnterPhone}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IsEnterPhone}">
+                    <apex:outputText value="Invalid Phone Message"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputTextarea value="{!PhoneError}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IsEnterPhone}"></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IsEnterPhone}"></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Enter Last Name" for="EnterLastNameConfirmCheckbox"/>
+                    <apex:outputPanel >
+                        <apex:inputCheckbox value="{!IsEnterLastName}" id="EnterLastNameConfirmCheckbox"/>
+                        <apex:actionsupport event="onclick" rerender="form" status="StatusId"/>
+                        <apex:actionStatus id="StatusId" >
+                            <apex:facet name="start" >
+                                <img src="/img/loading.gif" />                    
+                            </apex:facet>
+                        </apex:actionStatus>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IsEnterLastName}">
+                    <apex:outputText value="Question"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputTextarea value="{!EnterLastName}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{! !IsEnterLastName}">
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IsEnterLastName}"></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IsEnterLastName}"></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Confirm" for="ConfirmCheckbox"/>
+                    <apex:outputPanel >
+                        <apex:inputCheckbox value="{!IsConfirm}" id="ConfirmCheckbox"/>
+                        <apex:actionsupport event="onclick" rerender="form" status="StatusId"/>
+                        <apex:actionStatus id="StatusId" >
+                            <apex:facet name="start" >
+                                <img src="/img/loading.gif" />                    
+                            </apex:facet>
+                        </apex:actionStatus>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IsConfirm}">
+                    <apex:outputText value="Confirm Customer Infomation"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputTextarea value="{!Confirm}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IsConfirm}">
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IsConfirm}">
+                    <apex:outputText value="Choice Yes"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputText value="{!ConfirmYes}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IsConfirm}">
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IsConfirm}">
+                    <apex:outputText value="Choice No"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputText value="{!ConfirmNo}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{! !IsConfirm}">
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IsConfirm}"></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IsConfirm}"></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Input Form" for="InputFormCheckbox"/>
+                    <apex:outputPanel >
+                        <apex:inputCheckbox value="{!IsInputForm}" id="InputFormCheckbox"/>
+                        <apex:actionsupport event="onclick" rerender="form" status="StatusId"/>
+                        <apex:actionStatus id="StatusId" >
+                            <apex:facet name="start" >
+                                <img src="/img/loading.gif" />                    
+                            </apex:facet>
+                        </apex:actionStatus>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IsInputForm}">
+                    <apex:outputText value="Form Label"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputTextarea value="{!InputForm}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{! !IsInputForm}"></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem helpText="是否打印铭牌">
+                    <apex:outputLabel value="Print" for="PrintCheckbox"/>
+                    <apex:inputCheckbox value="{!IsPrint}" id="PrintCheckbox"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection showHeader="{!if(RegisterOrCheckIn == 'Register',false,true)}" title="Form Settings" collapsible="false" rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}" id="pgbks1">
+                <apex:pageBlockSectionItem HelpText="表单的Banner图片链接">
+                    <apex:outputText value="Form Banner"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputText value="{!FormBanner}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem HelpText="表单名称" rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}">
+                    <apex:outputText value="Form Title"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputText value="{!FormTitle}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem HelpText="成功时发送给用户的WeChat Notification Template，不填则成功时不会发送任何模板消息给用户" rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}" id="pgbsi1">
+                    <apex:outputText value="WeChat Notification Template"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput" id="outputpanel">
+                        <apex:inputhidden value="{!NotificationTemplateWrapper.TempId}" id="inputtext_lkid" />                 
+                        <apex:inputhidden value="{!NotificationTemplateWrapper.Name}" id="inputtext_lkold" />
+                        <apex:inputText value="{!NotificationTemplateWrapper.Name}" onchange="getElementByIdCS('page:form:thepageblock:pgbks1:pgbsi1:inputtext_lkid').value='';" id="inputtext" />
+                        <a title="WeChat Notification Template (New Window)" tabindex="4" onclick="setLastMousePosition(event),openTemplatePopUp(this)" id="{!NotificationTemplateId}Template_0_lkwgt" >
+                            <img title="WeChat Notification Template(New Window)" onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';" onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';" onblur="this.className = 'lookupIcon';" class="lookupIcon" alt="Email Template Lookup (New Window)" src="/s.gif" />
+                        </a>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem helpText="成功时发送给用户的WeChat Message，WeChat Message的类型可以是图文、文本、图片、视频等，不填则成功时不会发送任何 WeChat Message给用户" rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}" id="pgbsi3">
+                    <apex:outputText value="WeChat Message"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputhidden value="{!MessageWrapper.MessageId}" id="inputtext_lkid" />                 
+                        <apex:inputhidden value="{!MessageWrapper.Name}" id="inputtext_lkold" />
+                        <apex:inputText value="{!MessageWrapper.Name}" onchange="getElementByIdCS('page:form:thepageblock:pgbks1:pgbsi3:inputtext_lkid').value='';" id="inputtext" />
+                        <a title="WeChat Message(New Window)" tabindex="4" onclick="setLastMousePosition(event),openTemplatePopUp(this)" id="{!WeChatMessageId}Template_2_lkwgt" >
+                            <img title="WeChat Message(New Window)" onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';" onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';" onblur="this.className = 'lookupIcon';" class="lookupIcon" alt="Email Template Lookup (New Window)" src="/s.gif" />
+                        </a>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}">
+                    <apex:outputText value="Thank You Message"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputTextarea value="{!ThankYouMessage}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}">
+                    <apex:outputText value="Button Redirect URL"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputText value="{!ButtonRedirectURL}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}">
+                    <apex:outputText value="Button Label"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputText value="{!ButtonLabel}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Form Default Value" rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}" collapsible="false">
+                <apex:pageBlockSectionItem rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}">
+                    <apex:outputText value="First Name"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputText value="{!FirstName}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}">
+                    <apex:outputText value="Last Name"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputText value="{!LastName}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}">
+                    <apex:outputText value="Province"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputText value="{!Province}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}">
+                    <apex:outputText value="Phone"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputText value="{!Phone}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}">
+                    <apex:outputText value="Email"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputText value="{!Email}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}">
+                    <apex:outputText value="Company"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputText value="{!Company}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}">
+                    <apex:outputText value="PSI Code Description"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputText value="{!PSICodeDescription}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}">
+                    <apex:outputText value="Department"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputText value="{!Department}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!if(RegisterOrCheckIn == 'Register',false,true)}">
+                    <apex:outputText value="Title"/>
+                    <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:inputText value="{!Title}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Save" action="{!save}"/>
+                <apex:commandButton value="Cancel" action="{!cancel}"/>
+            </apex:pageBlockButtons>
+            <apex:actionStatus id="loading" layout="block">        
+                <apex:facet name="start">              
+                    <div class="overlayBackground displayBG">
+                        <img src="/img/loading.gif" id="loading" class="loadingImg"/>
+                    </div>
+                </apex:facet>
+            </apex:actionStatus>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

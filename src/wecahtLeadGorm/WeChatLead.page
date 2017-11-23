@@ -1,0 +1,305 @@
+<apex:page id="page" showHeader="false" cache="true" docType="html-5.0" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" controller="WeChatLeadController">
+    <html>
+        <head>
+            <meta charset="UTF-8"/>
+            <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0"/>
+            <title>{!Title}</title>
+            <link rel="stylesheet" type="text/css" href="https://asset.charket.com.cn/styles/vendor/weui.min.css"/>
+            <style>
+                body{
+                background-color: #efeff4;
+                }
+                .weui-label{
+                width: 6em;
+                }
+                .weui-select{
+                padding-left: 0;
+                }
+                .infoBlock{
+                margin-bottom: 50px;
+                }
+                .weui-cells_form .ge-mask {
+                display: none;
+                position: absolute;
+                background: #fff;
+                }
+                .ge-loading {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                z-index: 10;
+                }
+                .weui-cell {
+                padding: 8px 0 5px 15px;
+                }
+                .weui-cell_select .weui-cell__bd:after{
+                top: calc(50% - 0px);
+                }
+                .spanclass{
+                margin-right:5px;
+                margin-top:5px;
+                color:red;
+                }
+                .weui-cell_select-after {
+                padding: 2px 0 4px 15px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="weui-toptips weui-toptips_warn js_tooltips" id="weuiWarn">错误提示</div>
+            <div id="infoBlock" class="infoBlock">
+                <apex:outputPanel >
+                    <div id="banner">
+                        <img src="{!URLFOR($Resource.HoneywellLogo, 'Honeywell_Logo.jpg')}" style="width: 100%"/>
+                    </div>
+                </apex:outputPanel>
+                <div class="weui-cells__title">
+                    <span class="weui-flex__item">请填写以下内容完善信息</span>
+                </div>
+                <div class="weui-cells weui-cells_form">
+                    <div class="weui-mask ge-mask" id="mask">
+                        <i class="weui-loading ge-loading"></i>
+                    </div>
+                    <div class="weui-cell">
+                        <div class="weui-cell__hd">
+                            <label class="weui-label" for="name" style="display: flex;align-items: center;"><div class="spanclass">*</div><div>姓名</div></label>
+                        </div>
+                        <div class="weui-cell__bd weui-cell_primary">
+                            <input class="weui-input" type="text" name="name" id="name" required="required" placeholder="请输入姓名" />
+                        </div>
+                    </div>
+                    <div class="weui-cell">
+                        <div class="weui-cell__hd">
+                            <label class="weui-label" for="company" style="display: flex;align-items: center;"><div class="spanclass">*</div><div>公司</div></label>
+                        </div>
+                        <div class="weui-cell__bd weui-cell_primary">
+                            <input class="weui-input" type="text" name="company" id="company" required="required" placeholder="请输入公司名称" />
+                        </div>
+                    </div>
+                    <div class="weui-cell">
+                        <div class="weui-cell__hd">
+                            <label class="weui-label" for="phone" style="display: flex;align-items: center;"><div class="spanclass">*</div><div>手机</div></label>
+                        </div>
+                        <div class="weui-cell__bd weui-cell_primary">
+                            <input class="weui-input" type="tel" name="phone" id="phone" required="required" placeholder="请输入手机号码" />
+                        </div>
+                    </div>
+                    <div class="weui-cell">
+                        <div class="weui-cell__hd">
+                            <label class="weui-label" for="email" style="display: flex;align-items: center;"><div class="spanclass">*</div><div>邮箱</div></label>
+                        </div>
+                        <div class="weui-cell__bd weui-cell_primary">
+                            <input class="weui-input" type="email" name="email" id="email" required="required" placeholder="请输入电子邮箱" />
+                        </div>
+                    </div>
+                    <div class="weui-cell weui-cell_select weui-cell_select-after">
+                        <div class="weui-cell__hd">
+                            <label class="weui-label" for="industry" style="display: flex;align-items: center;"><div class="spanclass">*</div><div>所在行业</div></label>
+                        </div>
+                        <div class="weui-cell__bd weui-cell_select">
+                            <div class="weui-cell__bd">
+                                <select id="industry" name="industry" class="weui-select" title="请选择所在行业">
+                                    <option value="">请选择...</option>
+                                    <option value="航空与航天">航空与航天</option>
+                                    <option value="汽车与运输">汽车与运输</option>
+                                    <option value="楼宇建筑 ">楼宇建筑 </option>
+                                    <option value="化学品、特殊材料与化肥">化学品、特殊材料与化肥</option>
+                                    <option value="家居与消费品">家居与消费品</option>
+                                    <option value="能效与公共事业">能效与公共事业</option>
+                                    <option value="消防与应急救援">消防与应急救援</option>
+                                    <option value="医疗保健">医疗保健</option>
+                                    <option value="工业 ">工业 </option>
+                                    <option value="制造">制造</option>
+                                    <option value="生命安全与安防">生命安全与安防</option>
+                                    <option value="自动识别与数据采集">自动识别与数据采集</option>
+                                    <option value="石油、天然气、炼油、生物燃料与石油化工">石油、天然气、炼油、生物燃料与石油化工</option>
+                                    <option value="其他">其他</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="weui-btn-area">
+                    <a class="weui-btn weui-btn_primary" href="javascript:saveInfo()" style="background-color:#23bdf3">提交</a>
+                </div>
+                <div id="loadingToast" class="weui_loading_toast" style="display: none;">
+                    <div class="weui-mask_transparent"></div>
+                    <div class="weui-toast">
+                        <i class="weui-loading weui-icon_toast"></i>
+                        <p class="weui-toast__content">正在保存</p>
+                    </div>
+                </div>
+            </div>
+            <div id="messageBlock" style="display: none;">
+                <div class="container" id="container"><div class="msg">
+                    <div class="weui-msg">
+                        <div class="weui-msg__icon-area">
+                            <i class="weui-icon-success weui-icon_msg" style="color:#23bdf3"></i>
+                        </div>
+                        <div class="weui-msg__text-area">
+                            <h2 class="weui-msg__title">提交成功!</h2>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </body>
+        <script>
+        var openId = '{!EncryedOpenId}';
+        var isPrint = '{!IsPrint}';
+        var accId = '{!WeChatAccountId}';
+        var cId = '{!CampaignId}';
+        var cstatus = '{!CampaignMemberStatus}';
+        var templateId = '{!SuccessTemplateId}';
+        var messageId = '{!SuccessMessageId}';
+        var code = '{!$CurrentPage.parameters.code}';
+        var qrId = '{!$CurrentPage.parameters.qrId}';
+        
+        function escape2Html (str) {
+            var arrEntities = {'lt': '<', 'gt': '>', 'nbsp': ' ', 'amp': '&', 'quot': '"'}
+            if (str != null) {
+                str = str.replace(/&#39;/ig, "'")
+                return str.replace(/&(lt|gt|nbsp|amp|quot);/ig, function (all, t) { return arrEntities[t] })
+            }
+        }
+        
+        window.onload = function()
+        {
+            var currentUrl = window.location.href;
+            document.getElementById('mask').style.display = 'block';
+            
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.WeChatLeadController.init}',
+                openId, code, accId, currentUrl,
+                function(result, event) {
+                    if(event.status) {
+                        var finalResult = result != null ? JSON.parse(escape2Html(result)) : '';
+                        if(finalResult.oauth_url && finalResult.oauth_url !== '') {
+                            window.location.href = finalResult.oauth_url;
+                        }
+                        if(finalResult.contact || finalResult.lead) {
+                            var people = (finalResult.contact && finalResult.contact !== '') ? finalResult.contact : finalResult.lead
+                            var isLead = (finalResult.contact && finalResult.contact !== '') ? false : true;
+                            document.getElementById('name').value = people.Name ? people.Name : '';
+                            document.getElementById('email').value = people.Email ? people.Email : '';
+                            document.getElementById('company').value = isLead ? ((people.Company && people.Company != 'From WeChat') ? people.Company : '') : (people.Account ? people.Account.Name : '');
+                            document.getElementById('phone').value = people.Phone ? people.Phone : '';
+                            if(people.Description && people.Description.indexOf(':') != -1){
+                                document.getElementById('industry').value = people.Description.split(',')[0].split(':')[1];
+                            }
+                        }
+                    }
+                    else {
+                        displayErrorMsg(event.message);
+                    }
+                    document.getElementById('mask').style.display = 'none';
+                },
+                {escape: true}
+            );
+        }
+        function showLoadingToast() {
+            document.getElementById('loadingToast').style.display = 'block';
+        }
+        
+        function hideLoadingToast() {
+            document.getElementById('loadingToast').style.display = 'none';
+        }
+        
+        function saveInfo() {
+            if(validate()) {
+                showLoadingToast();
+                var name = document.getElementById('name').value;
+                var email = document.getElementById('email').value;
+                var company = document.getElementById('company').value;
+                var redirectURL = '{!$CurrentPage.parameters.redirectURL}';
+                
+                var industry = document.getElementById('industry').value;
+                var phone = document.getElementById('phone').value;
+                phone = phone.split(' ').join('');
+                phone = phone.split('-').join('');
+                
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.WeChatLeadController.save}',
+                    name, email, company, industry, phone, cId, cstatus, openId, templateId, messageId, isPrint, accId, qrId,
+                    function(result, event) {
+                        if(event.status) {
+                            hideLoadingToast();
+                            document.getElementById('infoBlock').style.display = 'none';
+                            if(redirectURL == ''){
+                                document.getElementById('messageBlock').style.display = 'block';
+                            }
+                            else {
+                                window.location.href = redirectURL;
+                            }
+                        } else {
+                            hideLoadingToast();
+                            displayErrorMsg(event.message);
+                        }
+                    },
+                    {escape: true}
+                );
+            }
+        }
+        function validate() {
+            for(var i = 0; i < document.getElementsByClassName('weui-input').length; i++) {
+                var inputObj = document.getElementsByClassName('weui-input')[i]
+                if(!inputObj.value) {
+                    displayErrorMsg(inputObj.placeholder);
+                    return false;
+                }
+            }
+            
+            for(var j = 0; j < document.getElementsByClassName('weui-select').length; j++) {
+                var selectObj = document.getElementsByClassName('weui-select')[j];
+                if(!selectObj.value || selectObj.selectedIndex == 0) {
+                    displayErrorMsg(selectObj.title);
+                    return false;
+                }
+            }
+            
+            var phone = document.getElementById('phone').value;
+            phone = phone.split(' ').join('');
+            phone = phone.split('-').join('');
+            var phoneRegex = /^1\d{10}$/;
+            if(!phoneRegex.test(phone)) {
+                displayErrorMsg('请输入正确的手机号码');
+                return false;
+            }
+            
+            var email = document.getElementById('email').value;
+            var emailRegex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            
+            if(!emailRegex.test(email)) {
+                displayErrorMsg('邮箱格式错误');
+                return false
+            }
+            
+            document.getElementById('weuiWarn').style.display = 'none';
+            document.getElementById('weuiWarn').innerHTML = '';
+            return true;
+        }
+        
+        function displayErrorMsg(content) {
+            document.getElementById('weuiWarn').style.display = 'block';
+            document.getElementById('weuiWarn').innerHTML = content;
+            setTimeout(function () {
+                document.getElementById('weuiWarn').style.display = 'none';
+            }, 2000);
+        }
+        
+        function getRadioValue(radioName) {
+            var radios = document.getElementsByName(radioName);
+            var result = '';
+            
+            for(var i = 0; i < radios.length; i++) {
+                var radio = radios[i];
+                if(radio.checked) {
+                    result = radio.value;
+                }
+            }
+            
+            return result;
+        }
+        </script>
+    </html>
+</apex:page>
