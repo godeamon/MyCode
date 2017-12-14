@@ -1,0 +1,16 @@
+<apex:page StandardController="Task" showHeader="false" sidebar="false" extensions="CoffeeDetailController">
+    <style>
+        .font {
+        	font-size: 12px;
+        	font-family: 'Salesforce Sans',Arial,sans-serif;
+    		line-height: 20px;
+    		padding: 10px;
+        }
+    </style>
+    
+    <div class="font">
+    	<apex:outputPanel >
+        	<apex:outputField value="{!Task.Description}"></apex:outputField>
+   		</apex:outputPanel>
+    </div>
+</apex:page>

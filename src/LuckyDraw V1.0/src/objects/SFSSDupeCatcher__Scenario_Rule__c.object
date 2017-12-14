@@ -1,0 +1,1312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <customHelpPage>SFSSDupeCatcher__Filter_Rules_Page_Help</customHelpPage>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>SFSSDupeCatcher__First_N_Letters__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The number of initial letters or words you would like to match in the chosen field(s).</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The number of initial letters or words you would like to match in the chosen field(s).</inlineHelpText>
+        <label>First N</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SFSSDupeCatcher__Fuzzy_Match__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Fuzzy Match</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>SFSSDupeCatcher__Mapping_Approach__c</fullName>
+        <deprecated>false</deprecated>
+        <description>&quot;Exact&quot; exact field value match.
+&quot;Domain&quot;  match domain part of a field.
+&quot;First N Letters&quot; match first N characters.
+&quot;Numeric Only&quot; strictly numeric characters.
+&quot;First 5 Zip&quot; match first 5 digits of Zip.
+&quot;Relaxed NA Phone&quot; match last 7 digits only.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicates the type of matching that will be used on the chosen field(s).</inlineHelpText>
+        <label>Matching Technique</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <controllingField>SFSSDupeCatcher__Match_field__c</controllingField>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Exact</fullName>
+                    <default>true</default>
+                    <label>Exact</label>
+                </value>
+                <value>
+                    <fullName>Domain</fullName>
+                    <default>false</default>
+                    <label>Domain</label>
+                </value>
+                <value>
+                    <fullName>First N Letters</fullName>
+                    <default>false</default>
+                    <label>First N Letters</label>
+                </value>
+                <value>
+                    <fullName>Numeric Only</fullName>
+                    <default>false</default>
+                    <label>Numeric Only</label>
+                </value>
+                <value>
+                    <fullName>Relaxed NA Phone</fullName>
+                    <default>false</default>
+                    <label>Relaxed NA Phone</label>
+                </value>
+                <value>
+                    <fullName>First 5 Zip</fullName>
+                    <default>false</default>
+                    <label>First 5 Zip</label>
+                </value>
+                <value>
+                    <fullName>First Name</fullName>
+                    <default>false</default>
+                    <label>First Name</label>
+                </value>
+                <value>
+                    <fullName>Clean Name</fullName>
+                    <default>false</default>
+                    <label>Clean Name</label>
+                </value>
+                <value>
+                    <fullName>Country Match</fullName>
+                    <default>false</default>
+                    <label>Country Match</label>
+                </value>
+                <value>
+                    <fullName>Street Address Match</fullName>
+                    <default>false</default>
+                    <label>Street Address Match</label>
+                </value>
+                <value>
+                    <fullName>First N Words</fullName>
+                    <default>false</default>
+                    <label>First N Words</label>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>State</controllingFieldValue>
+                <controllingFieldValue>Postal Code</controllingFieldValue>
+                <controllingFieldValue>Country</controllingFieldValue>
+                <controllingFieldValue>Mailing Street</controllingFieldValue>
+                <controllingFieldValue>Mailing City</controllingFieldValue>
+                <controllingFieldValue>Mailing State</controllingFieldValue>
+                <controllingFieldValue>Mailing Postal</controllingFieldValue>
+                <controllingFieldValue>Mailing Country</controllingFieldValue>
+                <controllingFieldValue>Other Street</controllingFieldValue>
+                <controllingFieldValue>Other City</controllingFieldValue>
+                <controllingFieldValue>Billing Street</controllingFieldValue>
+                <controllingFieldValue>Other State</controllingFieldValue>
+                <controllingFieldValue>Billing City</controllingFieldValue>
+                <controllingFieldValue>Other Postal Code</controllingFieldValue>
+                <controllingFieldValue>Billing State</controllingFieldValue>
+                <controllingFieldValue>Other Country</controllingFieldValue>
+                <controllingFieldValue>Billing Postal Code</controllingFieldValue>
+                <controllingFieldValue>Phone</controllingFieldValue>
+                <controllingFieldValue>Billing Country</controllingFieldValue>
+                <controllingFieldValue>Home Phone</controllingFieldValue>
+                <controllingFieldValue>Shipping Street</controllingFieldValue>
+                <controllingFieldValue>Other Phone</controllingFieldValue>
+                <controllingFieldValue>Shipping City</controllingFieldValue>
+                <controllingFieldValue>Fax</controllingFieldValue>
+                <controllingFieldValue>Shipping State</controllingFieldValue>
+                <controllingFieldValue>Ticker Symbol</controllingFieldValue>
+                <controllingFieldValue>Shipping Postal</controllingFieldValue>
+                <controllingFieldValue>Shipping Country</controllingFieldValue>
+                <controllingFieldValue>Mobile Phone</controllingFieldValue>
+                <controllingFieldValue>First Name</controllingFieldValue>
+                <controllingFieldValue>Last Name</controllingFieldValue>
+                <controllingFieldValue>Email</controllingFieldValue>
+                <controllingFieldValue>Company</controllingFieldValue>
+                <controllingFieldValue>Account Name</controllingFieldValue>
+                <controllingFieldValue>Account ID</controllingFieldValue>
+                <controllingFieldValue>Account Number</controllingFieldValue>
+                <controllingFieldValue>Site</controllingFieldValue>
+                <controllingFieldValue>Owner ID</controllingFieldValue>
+                <controllingFieldValue>Record Type</controllingFieldValue>
+                <controllingFieldValue>Street</controllingFieldValue>
+                <controllingFieldValue>Website</controllingFieldValue>
+                <controllingFieldValue>City</controllingFieldValue>
+                <valueName>Exact</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>State</controllingFieldValue>
+                <controllingFieldValue>Postal Code</controllingFieldValue>
+                <controllingFieldValue>Country</controllingFieldValue>
+                <controllingFieldValue>Mailing Street</controllingFieldValue>
+                <controllingFieldValue>Mailing City</controllingFieldValue>
+                <controllingFieldValue>Mailing State</controllingFieldValue>
+                <controllingFieldValue>Mailing Postal</controllingFieldValue>
+                <controllingFieldValue>Mailing Country</controllingFieldValue>
+                <controllingFieldValue>Other Street</controllingFieldValue>
+                <controllingFieldValue>Other City</controllingFieldValue>
+                <controllingFieldValue>Billing Street</controllingFieldValue>
+                <controllingFieldValue>Other State</controllingFieldValue>
+                <controllingFieldValue>Billing City</controllingFieldValue>
+                <controllingFieldValue>Other Postal Code</controllingFieldValue>
+                <controllingFieldValue>Billing State</controllingFieldValue>
+                <controllingFieldValue>Other Country</controllingFieldValue>
+                <controllingFieldValue>Billing Postal Code</controllingFieldValue>
+                <controllingFieldValue>Phone</controllingFieldValue>
+                <controllingFieldValue>Billing Country</controllingFieldValue>
+                <controllingFieldValue>Home Phone</controllingFieldValue>
+                <controllingFieldValue>Shipping Street</controllingFieldValue>
+                <controllingFieldValue>Other Phone</controllingFieldValue>
+                <controllingFieldValue>Shipping City</controllingFieldValue>
+                <controllingFieldValue>Fax</controllingFieldValue>
+                <controllingFieldValue>Shipping State</controllingFieldValue>
+                <controllingFieldValue>Ticker Symbol</controllingFieldValue>
+                <controllingFieldValue>Shipping Postal</controllingFieldValue>
+                <controllingFieldValue>Shipping Country</controllingFieldValue>
+                <controllingFieldValue>Mobile Phone</controllingFieldValue>
+                <controllingFieldValue>First Name</controllingFieldValue>
+                <controllingFieldValue>Last Name</controllingFieldValue>
+                <controllingFieldValue>Email</controllingFieldValue>
+                <controllingFieldValue>Company</controllingFieldValue>
+                <controllingFieldValue>Account Name</controllingFieldValue>
+                <controllingFieldValue>Account Number</controllingFieldValue>
+                <controllingFieldValue>Site</controllingFieldValue>
+                <controllingFieldValue>Street</controllingFieldValue>
+                <controllingFieldValue>Website</controllingFieldValue>
+                <controllingFieldValue>City</controllingFieldValue>
+                <valueName>First N Letters</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Postal Code</controllingFieldValue>
+                <controllingFieldValue>Mailing Postal</controllingFieldValue>
+                <controllingFieldValue>Other Postal Code</controllingFieldValue>
+                <controllingFieldValue>Billing Postal Code</controllingFieldValue>
+                <controllingFieldValue>Phone</controllingFieldValue>
+                <controllingFieldValue>Home Phone</controllingFieldValue>
+                <controllingFieldValue>Other Phone</controllingFieldValue>
+                <controllingFieldValue>Fax</controllingFieldValue>
+                <controllingFieldValue>Shipping Postal</controllingFieldValue>
+                <controllingFieldValue>Mobile Phone</controllingFieldValue>
+                <controllingFieldValue>Account Number</controllingFieldValue>
+                <controllingFieldValue>Site</controllingFieldValue>
+                <valueName>Numeric Only</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Postal Code</controllingFieldValue>
+                <controllingFieldValue>Mailing Postal</controllingFieldValue>
+                <controllingFieldValue>Other Postal Code</controllingFieldValue>
+                <controllingFieldValue>Shipping Postal</controllingFieldValue>
+                <valueName>First 5 Zip</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Phone</controllingFieldValue>
+                <controllingFieldValue>Home Phone</controllingFieldValue>
+                <controllingFieldValue>Other Phone</controllingFieldValue>
+                <controllingFieldValue>Fax</controllingFieldValue>
+                <controllingFieldValue>Mobile Phone</controllingFieldValue>
+                <valueName>Relaxed NA Phone</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Email</controllingFieldValue>
+                <controllingFieldValue>Website</controllingFieldValue>
+                <valueName>Domain</valueName>
+            </valueSettings>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>SFSSDupeCatcher__Match_Blanks__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Activates matching on blank fields.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If checked, DupeCatcher will match fields left blank.</inlineHelpText>
+        <label>Match Blanks</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>SFSSDupeCatcher__Match_field__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The field in a newly created or edited record that you would like this rule to use for matching against potential duplicates.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The field used by the rule to identify duplicates.</inlineHelpText>
+        <label>Source Field</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <controllingField>SFSSDupeCatcher__Scenario_Type__c</controllingField>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Mobile Phone</fullName>
+                    <default>false</default>
+                    <label>Mobile Phone</label>
+                </value>
+                <value>
+                    <fullName>First Name</fullName>
+                    <default>false</default>
+                    <label>First Name</label>
+                </value>
+                <value>
+                    <fullName>Last Name</fullName>
+                    <default>true</default>
+                    <label>Last Name</label>
+                </value>
+                <value>
+                    <fullName>Email</fullName>
+                    <default>false</default>
+                    <label>Email</label>
+                </value>
+                <value>
+                    <fullName>Company</fullName>
+                    <default>false</default>
+                    <label>Company</label>
+                </value>
+                <value>
+                    <fullName>Account Name</fullName>
+                    <default>false</default>
+                    <label>Account Name</label>
+                </value>
+                <value>
+                    <fullName>Account ID</fullName>
+                    <default>false</default>
+                    <label>Account ID</label>
+                </value>
+                <value>
+                    <fullName>Account Number</fullName>
+                    <default>false</default>
+                    <label>Account Number</label>
+                </value>
+                <value>
+                    <fullName>Site</fullName>
+                    <default>false</default>
+                    <label>Site</label>
+                </value>
+                <value>
+                    <fullName>Billing Street</fullName>
+                    <default>false</default>
+                    <label>Billing Street</label>
+                </value>
+                <value>
+                    <fullName>Billing City</fullName>
+                    <default>false</default>
+                    <label>Billing City</label>
+                </value>
+                <value>
+                    <fullName>Billing State</fullName>
+                    <default>false</default>
+                    <label>Billing State</label>
+                </value>
+                <value>
+                    <fullName>Billing Postal Code</fullName>
+                    <default>false</default>
+                    <label>Billing Postal Code</label>
+                </value>
+                <value>
+                    <fullName>Billing Country</fullName>
+                    <default>false</default>
+                    <label>Billing Country</label>
+                </value>
+                <value>
+                    <fullName>Shipping Street</fullName>
+                    <default>false</default>
+                    <label>Shipping Street</label>
+                </value>
+                <value>
+                    <fullName>Shipping City</fullName>
+                    <default>false</default>
+                    <label>Shipping City</label>
+                </value>
+                <value>
+                    <fullName>Shipping State</fullName>
+                    <default>false</default>
+                    <label>Shipping State</label>
+                </value>
+                <value>
+                    <fullName>Shipping Postal</fullName>
+                    <default>false</default>
+                    <label>Shipping Postal</label>
+                </value>
+                <value>
+                    <fullName>Shipping Country</fullName>
+                    <default>false</default>
+                    <label>Shipping Country</label>
+                </value>
+                <value>
+                    <fullName>Street</fullName>
+                    <default>false</default>
+                    <label>Street</label>
+                </value>
+                <value>
+                    <fullName>City</fullName>
+                    <default>false</default>
+                    <label>City</label>
+                </value>
+                <value>
+                    <fullName>State</fullName>
+                    <default>false</default>
+                    <label>State</label>
+                </value>
+                <value>
+                    <fullName>Postal Code</fullName>
+                    <default>false</default>
+                    <label>Postal Code</label>
+                </value>
+                <value>
+                    <fullName>Country</fullName>
+                    <default>false</default>
+                    <label>Country</label>
+                </value>
+                <value>
+                    <fullName>Mailing Street</fullName>
+                    <default>false</default>
+                    <label>Mailing Street</label>
+                </value>
+                <value>
+                    <fullName>Mailing City</fullName>
+                    <default>false</default>
+                    <label>Mailing City</label>
+                </value>
+                <value>
+                    <fullName>Mailing State</fullName>
+                    <default>false</default>
+                    <label>Mailing State</label>
+                </value>
+                <value>
+                    <fullName>Mailing Postal</fullName>
+                    <default>false</default>
+                    <label>Mailing Postal</label>
+                </value>
+                <value>
+                    <fullName>Mailing Country</fullName>
+                    <default>false</default>
+                    <label>Mailing Country</label>
+                </value>
+                <value>
+                    <fullName>Other Street</fullName>
+                    <default>false</default>
+                    <label>Other Street</label>
+                </value>
+                <value>
+                    <fullName>Other City</fullName>
+                    <default>false</default>
+                    <label>Other City</label>
+                </value>
+                <value>
+                    <fullName>Other State</fullName>
+                    <default>false</default>
+                    <label>Other State</label>
+                </value>
+                <value>
+                    <fullName>Other Postal Code</fullName>
+                    <default>false</default>
+                    <label>Other Postal Code</label>
+                </value>
+                <value>
+                    <fullName>Other Country</fullName>
+                    <default>false</default>
+                    <label>Other Country</label>
+                </value>
+                <value>
+                    <fullName>Phone</fullName>
+                    <default>false</default>
+                    <label>Phone</label>
+                </value>
+                <value>
+                    <fullName>Home Phone</fullName>
+                    <default>false</default>
+                    <label>Home Phone</label>
+                </value>
+                <value>
+                    <fullName>Other Phone</fullName>
+                    <default>false</default>
+                    <label>Other Phone</label>
+                </value>
+                <value>
+                    <fullName>Fax</fullName>
+                    <default>false</default>
+                    <label>Fax</label>
+                </value>
+                <value>
+                    <fullName>Ticker Symbol</fullName>
+                    <default>false</default>
+                    <label>Ticker Symbol</label>
+                </value>
+                <value>
+                    <fullName>Owner ID</fullName>
+                    <default>false</default>
+                    <label>Owner ID</label>
+                </value>
+                <value>
+                    <fullName>Record Type</fullName>
+                    <default>false</default>
+                    <label>Record Type</label>
+                </value>
+                <value>
+                    <fullName>Website</fullName>
+                    <default>false</default>
+                    <label>Website</label>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Mobile Phone</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>First Name</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Last Name</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <controllingFieldValue>Lead to Account (Person)</controllingFieldValue>
+                <valueName>Email</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <valueName>Company</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <valueName>Street</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <valueName>City</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <valueName>State</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <valueName>Postal Code</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <valueName>Country</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Phone</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Fax</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Owner ID</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Record Type</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <controllingFieldValue>Account (Person)</controllingFieldValue>
+                <controllingFieldValue>Lead to Account (Person)</controllingFieldValue>
+                <valueName>Website</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Account Name</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Account ID</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <controllingFieldValue>Account (Person)</controllingFieldValue>
+                <valueName>Account Number</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Mailing Street</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Mailing City</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Mailing State</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Mailing Postal</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Mailing Country</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Other Street</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Other City</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Other State</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Other Postal Code</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Other Country</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Home Phone</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Other Phone</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Site</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Billing Street</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Billing City</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Billing State</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Billing Postal Code</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Billing Country</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Shipping Street</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Shipping City</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Shipping State</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Shipping Postal</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Shipping Country</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Ticker Symbol</valueName>
+            </valueSettings>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>SFSSDupeCatcher__Scenario_Formula__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>SFSSDupeCatcher__Scenario__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Filter</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SFSSDupeCatcher__Scenario_Type_Formula__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>TEXT(SFSSDupeCatcher__Scenario__r.SFSSDupeCatcher__Scenario_Type__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Filter Type - From Filter</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SFSSDupeCatcher__Scenario_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The Filter Type of the parent filter</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Read only field that shows the Filter Type of the parent filter for this rule.</inlineHelpText>
+        <label>Filter Type</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Lead to Contact</fullName>
+                    <default>false</default>
+                    <label>Lead to Contact</label>
+                </value>
+                <value>
+                    <fullName>Lead to Account</fullName>
+                    <default>false</default>
+                    <label>Lead to Account</label>
+                </value>
+                <value>
+                    <fullName>Lead</fullName>
+                    <default>true</default>
+                    <label>Lead</label>
+                </value>
+                <value>
+                    <fullName>Contact</fullName>
+                    <default>false</default>
+                    <label>Contact</label>
+                </value>
+                <value>
+                    <fullName>Account</fullName>
+                    <default>false</default>
+                    <label>Account</label>
+                </value>
+                <value>
+                    <fullName>Account (Person)</fullName>
+                    <default>false</default>
+                    <label>Account (Person)</label>
+                </value>
+                <value>
+                    <fullName>Lead to Account (Person)</fullName>
+                    <default>false</default>
+                    <label>Lead to Account (Person)</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>SFSSDupeCatcher__Scenario__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The parent filter for this rule.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The filter under which this rule has been created.</inlineHelpText>
+        <label>Filter</label>
+        <referenceTo>SFSSDupeCatcher__Scenario__c</referenceTo>
+        <relationshipLabel>DupeCatcher Filter Rules</relationshipLabel>
+        <relationshipName>Scenario_Rules</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>SFSSDupeCatcher__Target_Match_Field__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The Contact or Account field  that you would like this rule to use for matching against potential duplicates.  This field is only valid if the filter type is &quot;Lead to Contact&quot; and &quot;Lead to Account&quot;.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The field used by the rule to identify duplicates for Lead to Account or Lead to Contact scenarios.</inlineHelpText>
+        <label>Target Field</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <controllingField>SFSSDupeCatcher__Scenario_Type__c</controllingField>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>First Name</fullName>
+                    <default>false</default>
+                    <label>First Name</label>
+                </value>
+                <value>
+                    <fullName>Last Name</fullName>
+                    <default>true</default>
+                    <label>Last Name</label>
+                </value>
+                <value>
+                    <fullName>Email</fullName>
+                    <default>false</default>
+                    <label>Email</label>
+                </value>
+                <value>
+                    <fullName>Company</fullName>
+                    <default>false</default>
+                    <label>Company</label>
+                </value>
+                <value>
+                    <fullName>Account Name</fullName>
+                    <default>false</default>
+                    <label>Account Name</label>
+                </value>
+                <value>
+                    <fullName>Account ID</fullName>
+                    <default>false</default>
+                    <label>Account ID</label>
+                </value>
+                <value>
+                    <fullName>Account Number</fullName>
+                    <default>false</default>
+                    <label>Account Number</label>
+                </value>
+                <value>
+                    <fullName>Site</fullName>
+                    <default>false</default>
+                    <label>Site</label>
+                </value>
+                <value>
+                    <fullName>Billing Street</fullName>
+                    <default>false</default>
+                    <label>Billing Street</label>
+                </value>
+                <value>
+                    <fullName>Billing City</fullName>
+                    <default>false</default>
+                    <label>Billing City</label>
+                </value>
+                <value>
+                    <fullName>Billing State</fullName>
+                    <default>false</default>
+                    <label>Billing State</label>
+                </value>
+                <value>
+                    <fullName>Billing Postal Code</fullName>
+                    <default>false</default>
+                    <label>Billing Postal Code</label>
+                </value>
+                <value>
+                    <fullName>Billing Country</fullName>
+                    <default>false</default>
+                    <label>Billing Country</label>
+                </value>
+                <value>
+                    <fullName>Shipping Street</fullName>
+                    <default>false</default>
+                    <label>Shipping Street</label>
+                </value>
+                <value>
+                    <fullName>Shipping City</fullName>
+                    <default>false</default>
+                    <label>Shipping City</label>
+                </value>
+                <value>
+                    <fullName>Shipping State</fullName>
+                    <default>false</default>
+                    <label>Shipping State</label>
+                </value>
+                <value>
+                    <fullName>Shipping Postal</fullName>
+                    <default>false</default>
+                    <label>Shipping Postal</label>
+                </value>
+                <value>
+                    <fullName>Shipping Country</fullName>
+                    <default>false</default>
+                    <label>Shipping Country</label>
+                </value>
+                <value>
+                    <fullName>Street</fullName>
+                    <default>false</default>
+                    <label>Street</label>
+                </value>
+                <value>
+                    <fullName>City</fullName>
+                    <default>false</default>
+                    <label>City</label>
+                </value>
+                <value>
+                    <fullName>State</fullName>
+                    <default>false</default>
+                    <label>State</label>
+                </value>
+                <value>
+                    <fullName>Postal Code</fullName>
+                    <default>false</default>
+                    <label>Postal Code</label>
+                </value>
+                <value>
+                    <fullName>Country</fullName>
+                    <default>false</default>
+                    <label>Country</label>
+                </value>
+                <value>
+                    <fullName>Mailing Street</fullName>
+                    <default>false</default>
+                    <label>Mailing Street</label>
+                </value>
+                <value>
+                    <fullName>Mailing City</fullName>
+                    <default>false</default>
+                    <label>Mailing City</label>
+                </value>
+                <value>
+                    <fullName>Mailing State</fullName>
+                    <default>false</default>
+                    <label>Mailing State</label>
+                </value>
+                <value>
+                    <fullName>Mailing Postal</fullName>
+                    <default>false</default>
+                    <label>Mailing Postal</label>
+                </value>
+                <value>
+                    <fullName>Mailing Country</fullName>
+                    <default>false</default>
+                    <label>Mailing Country</label>
+                </value>
+                <value>
+                    <fullName>Other Street</fullName>
+                    <default>false</default>
+                    <label>Other Street</label>
+                </value>
+                <value>
+                    <fullName>Other City</fullName>
+                    <default>false</default>
+                    <label>Other City</label>
+                </value>
+                <value>
+                    <fullName>Other State</fullName>
+                    <default>false</default>
+                    <label>Other State</label>
+                </value>
+                <value>
+                    <fullName>Other Postal Code</fullName>
+                    <default>false</default>
+                    <label>Other Postal Code</label>
+                </value>
+                <value>
+                    <fullName>Other Country</fullName>
+                    <default>false</default>
+                    <label>Other Country</label>
+                </value>
+                <value>
+                    <fullName>Phone</fullName>
+                    <default>false</default>
+                    <label>Phone</label>
+                </value>
+                <value>
+                    <fullName>Mobile Phone</fullName>
+                    <default>false</default>
+                    <label>Mobile Phone</label>
+                </value>
+                <value>
+                    <fullName>Home Phone</fullName>
+                    <default>false</default>
+                    <label>Home Phone</label>
+                </value>
+                <value>
+                    <fullName>Other Phone</fullName>
+                    <default>false</default>
+                    <label>Other Phone</label>
+                </value>
+                <value>
+                    <fullName>Fax</fullName>
+                    <default>false</default>
+                    <label>Fax</label>
+                </value>
+                <value>
+                    <fullName>Ticker Symbol</fullName>
+                    <default>false</default>
+                    <label>Ticker Symbol</label>
+                </value>
+                <value>
+                    <fullName>Owner ID</fullName>
+                    <default>false</default>
+                    <label>Owner ID</label>
+                </value>
+                <value>
+                    <fullName>Record Type</fullName>
+                    <default>false</default>
+                    <label>Record Type</label>
+                </value>
+                <value>
+                    <fullName>Website</fullName>
+                    <default>false</default>
+                    <label>Website</label>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>First Name</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Last Name</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <controllingFieldValue>Lead to Account (Person)</controllingFieldValue>
+                <valueName>Email</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <controllingFieldValue>Account (Person)</controllingFieldValue>
+                <controllingFieldValue>Lead to Account (Person)</controllingFieldValue>
+                <valueName>Account Name</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Mailing Street</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Mailing City</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Mailing State</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Mailing Postal</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Mailing Country</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Other Street</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Other City</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Other State</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Other Postal Code</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Other Country</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Phone</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Mobile Phone</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Home Phone</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Other Phone</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Fax</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Owner ID</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Contact</controllingFieldValue>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <controllingFieldValue>Lead to Account (Person)</controllingFieldValue>
+                <valueName>Website</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Billing Street</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Billing City</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Billing State</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Billing Postal Code</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Billing Country</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Shipping Street</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Shipping City</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Shipping State</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Shipping Postal</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead to Account</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Shipping Country</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <valueName>Company</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <valueName>Street</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <valueName>City</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <valueName>State</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <valueName>Postal Code</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <valueName>Country</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Lead</controllingFieldValue>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Record Type</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <valueName>Account ID</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Contact</controllingFieldValue>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <controllingFieldValue>Account (Person)</controllingFieldValue>
+                <valueName>Account Number</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Site</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Account</controllingFieldValue>
+                <valueName>Ticker Symbol</valueName>
+            </valueSettings>
+        </valueSet>
+    </fields>
+    <label>DupeCatcher Filter Rule</label>
+    <nameField>
+        <displayFormat>Rule-{0}</displayFormat>
+        <label>Rule Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>DupeCatcher Filter Rules</pluralLabel>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>SFSSDupeCatcher__Match_field__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>SFSSDupeCatcher__Target_Match_Field__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>SFSSDupeCatcher__Mapping_Approach__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>SFSSDupeCatcher__First_N_Letters__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>SFSSDupeCatcher__Match_Blanks__c</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>SFSSDupeCatcher__Match_field__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>SFSSDupeCatcher__Target_Match_Field__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>SFSSDupeCatcher__Mapping_Approach__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>SFSSDupeCatcher__First_N_Letters__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>SFSSDupeCatcher__Match_Blanks__c</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>SFSSDupeCatcher__Match_field__c</searchFilterFields>
+        <searchFilterFields>SFSSDupeCatcher__Target_Match_Field__c</searchFilterFields>
+        <searchFilterFields>SFSSDupeCatcher__Mapping_Approach__c</searchFilterFields>
+        <searchFilterFields>SFSSDupeCatcher__First_N_Letters__c</searchFilterFields>
+        <searchFilterFields>SFSSDupeCatcher__Match_Blanks__c</searchFilterFields>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>SFSSDupeCatcher__Validate_Scenario_Type</fullName>
+        <active>true</active>
+        <description>This field should match the scenario type for the parent scenario.</description>
+        <errorConditionFormula>CASE(SFSSDupeCatcher__Scenario_Type__c, &quot;Account&quot;, 1, &quot;Contact&quot;, 2, &quot;Lead&quot;, 3, &quot;Lead to Account&quot;, 4, &quot;Lead to Contact&quot;, 5, &quot;Account (Person)&quot;, 6, &quot;Lead to Account (Person)&quot;, 7, &quot;Lead (Person)&quot; ,8 ,100 ) &lt;&gt; CASE( SFSSDupeCatcher__Scenario__r.SFSSDupeCatcher__Scenario_Type__c, &quot;Account&quot;, 1, &quot;Contact&quot;, 2, &quot;Lead&quot;, 3, &quot;Lead to Account&quot;, 4, &quot;Lead to Contact&quot;, 5, &quot;Account (Person)&quot;, 6, &quot;Lead to Account (Person)&quot;, 7, &quot;Lead (Person)&quot;,8, 99 )</errorConditionFormula>
+        <errorDisplayField>SFSSDupeCatcher__Scenario_Type__c</errorDisplayField>
+        <errorMessage>This field should match the scenario type for the parent scenario.</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+</CustomObject>

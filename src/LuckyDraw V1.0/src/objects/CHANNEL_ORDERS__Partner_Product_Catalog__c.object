@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>CHANNEL_ORDERS__Allow_Auto_Renew_Override__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Enables/Disables the Partner to Override the Contract Auto Renew field value.</description>
+        <externalId>false</externalId>
+        <label>Allow Auto Renew Override</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>CHANNEL_ORDERS__Allow_Cancellation_Terms_Override__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Enables/Disables the Partner to Override the Cancellation Terms field value.</description>
+        <externalId>false</externalId>
+        <label>Allow Cancellation Terms Override</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>CHANNEL_ORDERS__Allow_Contract_Length_Override__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Enables/Disables the Partner to Override the Contract Length field value.</description>
+        <externalId>false</externalId>
+        <label>Allow Contract Length Override</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>CHANNEL_ORDERS__Allow_Renewal_Length_Override__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Enables/Disables the Partner to Override the Renewal Terms field value.</description>
+        <externalId>false</externalId>
+        <label>Allow Renewal Length Override</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>CHANNEL_ORDERS__Application__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Name of the Application record for this Product Catalog.</description>
+        <externalId>false</externalId>
+        <label>Application</label>
+        <length>80</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CHANNEL_ORDERS__Billing_Frequency__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Controls the frequency in which this Product is Billed, unit is Months.</description>
+        <externalId>false</externalId>
+        <label>Billing Frequency</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CHANNEL_ORDERS__Cancellation_Terms__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Controls the Cancellation time for this Product, unit is Days.</description>
+        <externalId>false</externalId>
+        <label>Cancellation Terms (Days)</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CHANNEL_ORDERS__Contract_Auto_Renew__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Controls if a contract for this product is Auto Renewed or not.</description>
+        <externalId>false</externalId>
+        <label>Contract Auto Renew</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                    <label>Yes</label>
+                </value>
+                <value>
+                    <fullName>No</fullName>
+                    <default>false</default>
+                    <label>No</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>CHANNEL_ORDERS__Contract_Length__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Controls the length of a contract for this Product, unit is Months.</description>
+        <externalId>false</externalId>
+        <label>Contract Length</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CHANNEL_ORDERS__Custom_Unit__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Represents the custom unit value when Pricing Unit is set to &apos;Custom&apos;.</description>
+        <externalId>false</externalId>
+        <label>Custom Unit</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CHANNEL_ORDERS__Fixed_Price__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Fixed Price</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CHANNEL_ORDERS__Floor_Price__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Floor Price</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CHANNEL_ORDERS__PNR__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>PNR %</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>CHANNEL_ORDERS__Partner_Application_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Partner Application Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CHANNEL_ORDERS__Partner_Contract_Terms__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Partner Contract Terms</label>
+        <referenceTo>CHANNEL_ORDERS__Partner_Contract_Terms__c</referenceTo>
+        <relationshipLabel>Partner Product Catalog</relationshipLabel>
+        <relationshipName>Partner_Product_Catalog</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>CHANNEL_ORDERS__Pricing_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Pricing Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>PNR</fullName>
+                    <default>false</default>
+                    <label>PNR</label>
+                </value>
+                <value>
+                    <fullName>FIXED</fullName>
+                    <default>false</default>
+                    <label>FIXED</label>
+                </value>
+                <value>
+                    <fullName>LIST</fullName>
+                    <default>false</default>
+                    <label>LIST</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>CHANNEL_ORDERS__Pricing_Unit__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Represents the unit used by the Partner to sell this product.</description>
+        <externalId>false</externalId>
+        <label>Pricing Unit</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>User</fullName>
+                    <default>false</default>
+                    <label>User</label>
+                </value>
+                <value>
+                    <fullName>Org</fullName>
+                    <default>false</default>
+                    <label>Org</label>
+                </value>
+                <value>
+                    <fullName>Custom</fullName>
+                    <default>false</default>
+                    <label>Custom</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>CHANNEL_ORDERS__Product_Description__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Product Description</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>CHANNEL_ORDERS__Product_ID__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Product ID</label>
+        <length>30</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CHANNEL_ORDERS__Product_Special_Terms__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Product Special Terms</label>
+        <length>32000</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>CHANNEL_ORDERS__Renewal_Terms__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Represents the length of a renewed contract for this product, unit is Months.</description>
+        <externalId>false</externalId>
+        <label>Renewal Terms (Months)</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CHANNEL_ORDERS__Special_Instructions__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Special Instructions</label>
+        <length>32000</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>CHANNEL_ORDERS__Status__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Active</fullName>
+                    <default>false</default>
+                    <label>Active</label>
+                </value>
+                <value>
+                    <fullName>Inactive</fullName>
+                    <default>false</default>
+                    <label>Inactive</label>
+                </value>
+                <value>
+                    <fullName>Retired (Add-ons Only)</fullName>
+                    <default>false</default>
+                    <label>Retired (Add-ons Only)</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <label>Partner Product Catalog</label>
+    <listViews>
+        <fullName>CHANNEL_ORDERS__All</fullName>
+        <columns>NAME</columns>
+        <columns>CHANNEL_ORDERS__Partner_Contract_Terms__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <label>Product Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Partner Product Catalog</pluralLabel>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>CHANNEL_ORDERS__Partner_Contract_Terms__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CHANNEL_ORDERS__Pricing_Type__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CHANNEL_ORDERS__PNR__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CHANNEL_ORDERS__Fixed_Price__c</lookupDialogsAdditionalFields>
+        <searchFilterFields>NAME</searchFilterFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>CHANNEL_ORDERS__Fixed_Price_is_required</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND( ISPICKVAL(CHANNEL_ORDERS__Pricing_Type__c ,&quot;FIXED&quot;),ISNULL(  CHANNEL_ORDERS__Fixed_Price__c ))</errorConditionFormula>
+        <errorDisplayField>CHANNEL_ORDERS__Fixed_Price__c</errorDisplayField>
+        <errorMessage>Fixed Price is required if Pricing Type = FIXED</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>CHANNEL_ORDERS__Fixed_Price_should_be_blank</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND( ISPICKVAL(CHANNEL_ORDERS__Pricing_Type__c ,&quot;PNR&quot;),not(ISNULL( CHANNEL_ORDERS__Fixed_Price__c) ))</errorConditionFormula>
+        <errorDisplayField>CHANNEL_ORDERS__Fixed_Price__c</errorDisplayField>
+        <errorMessage>Fixed Price must be blank if Pricing Type = PNR</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>CHANNEL_ORDERS__Floor_price_is_required</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND( ISPICKVAL(CHANNEL_ORDERS__Pricing_Type__c ,&quot;PNR&quot;),ISNULL( CHANNEL_ORDERS__Floor_Price__c ))</errorConditionFormula>
+        <errorDisplayField>CHANNEL_ORDERS__Floor_Price__c</errorDisplayField>
+        <errorMessage>Floor Price is required if Pricing Type = PNR</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>CHANNEL_ORDERS__PNR_percent_is_required</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND( ISPICKVAL(CHANNEL_ORDERS__Pricing_Type__c ,&quot;PNR&quot;),ISNULL( CHANNEL_ORDERS__PNR__c ))</errorConditionFormula>
+        <errorDisplayField>CHANNEL_ORDERS__PNR__c</errorDisplayField>
+        <errorMessage>PNR % is required if Pricing Type = PNR</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>CHANNEL_ORDERS__PNR_percent_should_be_blank</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND( ISPICKVAL(CHANNEL_ORDERS__Pricing_Type__c ,&quot;FIXED&quot;),not(ISNULL( CHANNEL_ORDERS__PNR__c) ))</errorConditionFormula>
+        <errorDisplayField>CHANNEL_ORDERS__PNR__c</errorDisplayField>
+        <errorMessage>PNR % must be blank if Pricing Type = FIXED</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+</CustomObject>

@@ -1,0 +1,282 @@
+<apex:page id="page" showHeader="false" cache="true" docType="html-5.0" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" controller="WeChatLeadController">
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0"/>
+        <title>{!Title}</title>
+        <link rel="stylesheet" type="text/css" href="https://asset.charket.com.cn/styles/vendor/weui.min.css"/>
+        <style>
+            body{
+                background-color: #efeff4;
+            }
+            .weui-label{
+                width: 6em;
+            }
+            .weui-select{
+                padding-left: 0;
+            }
+            .infoBlock{
+                margin-bottom: 50px;
+            }
+            .weui-cells_form .ge-mask {
+                display: none;
+                position: absolute;
+                background: #fff;
+            }
+            .ge-loading {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                z-index: 10;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="weui-toptips weui-toptips_warn js_tooltips" id="weuiWarn">Error</div>
+        <div id="infoBlock" class="infoBlock">
+            <apex:outputPanel rendered="{!BannerURL != ''}">
+                <div id="banner">
+                    <img src="{!BannerURL}" style="width: 100%"/>
+                </div>
+            </apex:outputPanel>
+            <div class="weui-cells__title">
+                <span class="weui-flex__item">Information</span>
+            </div>
+            <div class="weui-cells weui-cells_form">
+                <div class="weui-mask ge-mask" id="mask">
+                    <i class="weui-loading ge-loading"></i>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label" for="firstName">First Name</label>
+                    </div>
+                    <div class="weui-cell__bd weui-cell_primary">
+                        <input class="weui-input" type="text" name="firstName" id="firstName" required="required" placeholder="First Name" />
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label" for="lastName">Last Name</label>
+                    </div>
+                    <div class="weui-cell__bd weui-cell_primary">
+                        <input class="weui-input" type="text" name="lastName" id="lastName"  required="required" placeholder="Last Name" />
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label" for="company">Company</label>
+                    </div>
+                    <div class="weui-cell__bd weui-cell_primary">
+                        <input class="weui-input" type="text" name="company" id="company" required="required" placeholder="Company" />
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label" for="email">Email</label>
+                    </div>
+                    <div class="weui-cell__bd weui-cell_primary">
+                        <input class="weui-input" type="email" name="email" id="email" required="required" placeholder="Email" />
+                    </div>
+                </div>
+            </div>
+            <div class="weui-cells__title">Do you want to free trial Charket?</div>
+            <div class="weui-cells weui-cells_radio" title="是否有打算使用 Charket 的计划？">
+                <label class="weui-cell weui-check__label" for="interestedInCharket1">
+                    <div class="weui-cell__bd">
+                        <p>Yes</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                        <input value="1" type="radio" name="interestedInCharket" class="weui-check" id="interestedInCharket1"/>
+                        <span class="weui-icon-checked"></span>
+                    </div>
+                </label>
+                <label class="weui-cell weui-check__label" for="interestedInCharket2">
+                    <div class="weui-cell__bd">
+                        <p>No</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                        <input value="0" type="radio" name="interestedInCharket" class="weui-check" id="interestedInCharket2" />
+                        <span class="weui-icon-checked"></span>
+                    </div>
+                </label>
+            </div>
+            <div class="weui-btn-area">
+                <a class="weui-btn weui-btn_primary" href="javascript:saveInfo()" style="background-color:#23bdf3">Submit</a>
+            </div>
+
+            <div id="loadingToast" class="weui_loading_toast" style="display: none;">
+                <div class="weui-mask_transparent"></div>
+                <div class="weui-toast">
+                    <i class="weui-loading weui-icon_toast"></i>
+                    <p class="weui-toast__content">Saving</p>
+                </div>
+            </div>
+        </div>
+        <div id="messageBlock" style="display: none;">
+            <div class="container" id="container"><div class="msg">
+            <div class="weui-msg">
+                <div class="weui-msg__icon-area">
+                    <i class="weui-icon-success weui-icon_msg" style="color:#23bdf3"></i>
+                </div>
+                <div class="weui-msg__text-area">
+                    <h2 class="weui-msg__title">Success</h2>
+                </div>
+            </div>
+            </div></div>
+        </div>
+    </body>
+
+    <script>
+        var openId = '{!EncryedOpenId}';
+        var isPrint = '{!IsPrint}';
+        var accId = '{!WeChatAccountId}';
+        var cId = '{!CampaignId}';
+        var cstatus = '{!CampaignMemberStatus}';
+        var templateId = '{!SuccessTemplateId}';
+        var messageId = '{!SuccessMessageId}';
+        var code = '{!$CurrentPage.parameters.code}';
+        var qrId = '{!$CurrentPage.parameters.qrId}';
+
+        
+        function escape2Html (str) {
+          var arrEntities = {'lt': '<', 'gt': '>', 'nbsp': ' ', 'amp': '&', 'quot': '"'}
+          if (str != null) {
+            str = str.replace(/&#39;/ig, "'")
+            return str.replace(/&(lt|gt|nbsp|amp|quot);/ig, function (all, t) { return arrEntities[t] })
+          }
+        }
+
+        window.onload = function(){
+            var currentUrl = window.location.href;
+
+            document.getElementById('mask').style.display = 'block';
+
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.WeChatLeadController.init}',
+                openId, code, accId, currentUrl,
+                function(result, event) {
+                    if(event.status) {
+                        var finalResult = result != null ? JSON.parse(escape2Html(result)) : '';
+                        if(finalResult.oauth_url && finalResult.oauth_url !== '') {
+                            window.location.href = finalResult.oauth_url;
+                        }
+
+                        if(finalResult.contact || finalResult.lead) {
+                            var people = (finalResult.contact && finalResult.contact !== '') ? finalResult.contact : finalResult.lead
+                            var isLead = (finalResult.contact && finalResult.contact !== '') ? false : true;
+                            document.getElementById('lastName').value = people.LastName ? people.LastName : ''
+                            document.getElementById('firstName').value = people.FirstName ? people.FirstName : ''
+                            document.getElementById('email').value = people.Email ? people.Email : ''
+                            document.getElementById('company').value = isLead ? ((people.Company && people.Company != 'From WeChat') ? people.Company : '') : people.Account.Name;
+                            document.getElementById('interestedInCharket1').checked = people.IsInterestedInCharket__c
+                        }
+                        if(name != '' && name != 'null')
+                        {
+                            document.getElementById('lastName').value = name
+                        }
+
+                    } else {
+                        displayErrorMsg(event.message);
+                    }
+                    document.getElementById('mask').style.display = 'none';
+                },
+                {escape: true}
+            );
+        }
+
+        function showLoadingToast() {
+            document.getElementById('loadingToast').style.display = 'block';
+        }
+
+        function hideLoadingToast() {
+            document.getElementById('loadingToast').style.display = 'none';
+        }
+
+        function saveInfo() {
+            if(validate()) {
+                showLoadingToast();
+                var lastName = document.getElementById('lastName').value;
+                var firstName = document.getElementById('firstName').value;
+                var email = document.getElementById('email').value;
+                var company = document.getElementById('company').value;
+                var isInterestedInCharket = getRadioValue('interestedInCharket');
+                var redirectURL = '{!$CurrentPage.parameters.redirectURL}';
+                
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.WeChatLeadController.save}',
+                    firstName, lastName, email, company, isInterestedInCharket, cId, cstatus, openId, templateId, messageId, isPrint, accId, qrId,
+                    function(result, event) {
+                        if(event.status) {
+                            hideLoadingToast();
+                            document.getElementById('infoBlock').style.display = 'none';
+                            if(redirectURL == ''){
+                                document.getElementById('messageBlock').style.display = 'block';
+                            }
+                            else {
+                              window.location.href = redirectURL;
+                            }
+                        } else {
+                            hideLoadingToast();
+                            displayErrorMsg(event.message);
+                        }
+                    },
+                    {escape: true}
+                );
+            }
+        }
+
+        function validate() {
+            for(var i = 0; i < document.getElementsByClassName('weui-input').length; i++) {
+                var inputObj = document.getElementsByClassName('weui-input')[i]
+                
+                if(!inputObj.value) {
+                    displayErrorMsg(inputObj.placeholder + ' is required');
+                    return false;
+                }
+            }
+            
+            //for(var j = 0; j < document.getElementsByClassName('weui-cells_radio').length; j++) {
+                //var selectObj = document.getElementsByClassName('weui-cells_radio')[j]
+                //if(getRadioValue('interestedInCharket') === '') {
+                    //displayErrorMsg(selectObj.title);
+                    //return false;
+                //}
+            //}
+            
+            var email = document.getElementById('email').value;
+            var emailRegex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            
+            if(!emailRegex.test(email)) {
+                displayErrorMsg('Invalid email address');
+                return false
+            }
+
+            document.getElementById('weuiWarn').style.display = 'none';
+            document.getElementById('weuiWarn').innerHTML = '';
+            return true;
+        }
+
+        function displayErrorMsg(content) {
+            document.getElementById('weuiWarn').style.display = 'block';
+            document.getElementById('weuiWarn').innerHTML = content;
+            setTimeout(function () {
+                document.getElementById('weuiWarn').style.display = 'none';
+            }, 2000);
+        }
+    
+        function getRadioValue(radioName) {
+            var radios = document.getElementsByName(radioName);
+            var result = '';
+            
+            for(var i = 0; i < radios.length; i++) {
+                var radio = radios[i];
+                if(radio.checked) {
+                    result = radio.value;
+                }
+            }
+            
+            return result;
+        }
+    </script>
+</html>
+</apex:page>

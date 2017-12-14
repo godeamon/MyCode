@@ -1,0 +1,67 @@
+<apex:page showHeader="false" sidebar="false" docType="html-5.0" standardStylesheets="false"
+ applyBodyTag="false" applyHtmlTag="false">
+<html lang="en">
+  <head>
+    <title>Charket: Connects Your Business with WeChat/微信</title>
+    <meta charset="UTF-8"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <meta name="keywords" content="Social,CRM,WeChat,Marketing,微信和Salesforce集成"/>
+      <meta name="description" content="Charket connects your Salesforce with WeChat and its 1 billion users. With Charket, you can market and sell your products to WeChat users and provide them the best customer service right from within Salesforce."/>
+      <meta property="og:title" content="Charket: Connects Your Business with WeChat/微信"/>
+      <meta property="og:description" content="Charket connects your Salesforce with WeChat and its 1 billion users. With Charket, you can market and sell your products to WeChat users and provide them the best customer service right from within Salesforce."/>
+      <meta property="og:image"/>
+      <meta property="og:site_name" content="Charket.com"/>
+      <meta property="og:url" content="http://www.charket.com"/>
+      <meta property="og:type" content="website"/>
+      <meta property="og:locale" content="en"/>
+      <link href="{!URLFOR($Resource.CharketWeb, 'css/charket.css')}" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <header><img src="{!URLFOR($Resource.CharketWeb, 'img/logo.svg')}"/></header>
+    <div class="container">
+      <p class="text1">In the WeChat world,</p>
+      <p class="text2">we do not need a website.</p>
+      <p class="text3">Scan this QR code to meet us on WeChat</p>
+    </div>
+    <div class="logos">
+      <img class="code" src="{!URLFOR($Resource.CharketWeb, 'img/two.png')}" alt=""/>
+      <div class="logo logo-left user" ></div>
+      <div class="logo logo-left charket" ></div>
+      <div class="logo logo-right dialog" ></div>
+      <div class="logo logo-left meeting" ></div>
+      <img class="small_logo" src="{!URLFOR($Resource.CharketWeb, 'img/smalllogo.png')}" alt=""/>
+      <div class="logo logo-right ticket" ></div>
+      <div class="logo logo-right sf" ></div>
+      <div class="logo logo-right wei_xin" ></div>
+    </div>
+    <script>
+      var fadeInLogos = function () {
+        var timer,
+            logosLeft = document.getElementsByClassName('logo-left'),
+            logosRight = document.getElementsByClassName('logo-right'),
+            logosLeftArray = Array.from(logosLeft),
+            logosRightArray = Array.from(logosRight);
+        function fadeIn() {
+          var logoRight = logosRightArray.shift(); 
+          logoRight.style.display = 'block';
+          if ( logosLeftArray.length > 0 ) {
+            var logoLeft = logosLeftArray.shift();
+            logoLeft.style.display = 'block';
+          }
+          if ( logosRightArray.length > 0 ) {
+            timer = setTimeout( function () {
+              fadeIn();
+            }, 500); 
+          }
+          else {
+            clearTimeout(timer);
+            return false;
+          }  
+        };
+        fadeIn();
+      }
+      fadeInLogos();
+    </script>
+  </body>
+</html>
+</apex:page>

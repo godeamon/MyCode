@@ -1,0 +1,104 @@
+<apex:page StandardController="Lead" extensions="QRCodeGeneratorController" tabStyle="Lead" recordSetVar="leads">
+    <apex:sectionHeader title="Lead List" subtitle="Generate QR Code"/>
+    <style>
+    .gap {
+        margin-right: 20px;
+    }
+    .butGap {
+        text-align: center;
+        padding: 8px;
+    }  
+    </style>
+    <apex:form > 
+        <apex:pageBlock id="leadList">
+            <div>
+                <span class="gap">
+                    <lable>View:</lable>
+                    <apex:selectList value="{!filterId}" size="1">
+                        <apex:selectOptions value="{!listViewOptions}"/>
+                        <apex:actionSupport event="onchange" reRender="leadList" status="loading"/>
+                    </apex:selectList>
+                </span>
+                <span class="gap">
+                    <lable>WeChat Account:</lable>
+                    <apex:selectList value="{!WeChatAccountId}" size="1">
+                        <apex:selectOptions value="{!wechatAccountNames}"/>
+                        <apex:actionSupport event="onchange" reRender="leadList" status="loading"/>
+                    </apex:selectList>
+                </span>
+                <span class="gap">
+                    <lable>WeChat Message ID:</lable>
+                    <apex:inputText value="{!WeChatMessageId}"/>
+                </span>
+                <span class="gap">
+                    <lable>QR Code Expiration Hours:</lable>
+                    <apex:inputText value="{!QRCodeExpirationHours}"/>
+                </span>
+            </div>
+            <div class="butGap">
+                <span>
+                    <apex:commandButton id="mybutton" value="Generate QR Code" action="{!generateQRCode}" onclick="if(!confirm('Are you sure?')){return false};" disabled="{!NOT(isBatchJobCompleted)}" status="loading" reRender="leadList"/>
+                </span>
+                <span class="gap">
+                    <apex:actionStatus id="loading">         
+                        <apex:facet name="start">               
+                            <img src="/img/loading.gif" id="loading"/>
+                        </apex:facet>
+                    </apex:actionStatus>
+                </span>
+                <span class="gap">
+                    <apex:outputText escape="false" rendered="{!NOT(isBatchJobCompleted)}" style="color:balck;" value="<strong>Loading...</strong>"/>
+                </span>
+            </div>
+            <apex:pageBlockSection rendered="{!NOT(isBatchJobCompleted)}">
+                <apex:actionStatus id="act" startText=""/>
+                <apex:actionPoller interval="5" action="{!checkBatchStatus}" enabled="{!NOT(isBatchJobCompleted)}" reRender="leadList" status="act" timeout="60"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockTable value="{!leads}" var="ld" rows="{!pageSize}">
+                <apex:column headerValue="Name">
+                    <apex:outputLink value="/{!ld.Id}" id="link_name" target="_blank">
+                        {!ld.Name}
+                    </apex:outputLink>
+                </apex:column>
+                <apex:column value="{!ld.Company}"/>
+                <apex:column value="{!ld.Email}"/>
+                <apex:column value="{!ld.WeChatQRCodeURL__c}"/>
+                <apex:column value="{!ld.NumberId__c}"/>
+            </apex:pageBlockTable>
+            <table style="width: 100%">
+                <tr>
+                    <td>
+                        Page: <apex:outputText value="{!PageNumber} of {!CEILING(ResultSize / PageSize)}"/>
+                    </td>
+                    <td align="center">
+                        <span class="gap">
+                            <apex:commandLink action="{!First}" value="<<" rendered="{!HasPrevious}"/>
+                            <apex:outputText style="color: #ccc;" value="<<" rendered="{!NOT(HasPrevious)}"/>
+                        </span>
+                        <span class="gap">
+                            <apex:commandLink action="{!Previous}" value="<Previous" rendered="{!HasPrevious}"/>
+                            <apex:outputText style="color: #ccc;" value="<Previous" rendered="{!NOT(HasPrevious)}"/>
+                        </span>
+                        <span class="gap">
+                            <apex:commandLink action="{!Next}" value="Next>" rendered="{!HasNext}"/>
+                            <apex:outputText style="color: #ccc;" value="Next>" rendered="{!NOT(HasNext)}"/>
+                        </span>
+                        <span class="gap">
+                            <apex:commandLink action="{!Last}" value=">>" rendered="{!HasNext}"/>
+                            <apex:outputText style="color: #ccc;" value=">>" rendered="{!NOT(HasNext)}"/>
+                        </span>
+                    </td>
+                    <td align="right">
+                        Records per page:
+                        <apex:selectList value="{!PageSize}" size="1">
+                            <apex:selectOption itemValue="5" itemLabel="5"/>
+                            <apex:selectOption itemValue="10" itemLabel="10"/>
+                            <apex:selectOption itemValue="20" itemLabel="20"/>
+                            <apex:actionSupport event="onchange" reRender="leadList" status="loading"/>
+                        </apex:selectList>
+                    </td>
+                </tr>
+            </table>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

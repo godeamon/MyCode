@@ -1,0 +1,758 @@
+<apex:page controller="LuckyDrawController" action="{!validateSettings}" showHeader="false" id="page">
+  <html xmlns:v-bind="http://www.charket.com/" xmlns:v-on="http://www.charket.com/">
+  <head>
+    <script data-require="vue.js@*" data-semver="10.0.26" src="{!URLFor($Resource.LuckyDraw, 'assets/vue.min.js')}"></script>
+    <style>
+      /* Styles go here */
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        height: 100%;
+      }
+
+      body {
+        padding: 0;
+        width: 100%;
+        height: 100%;
+      }
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none !important;
+        margin: 0;
+      }
+      input[type="number"] {
+        -moz-appearance: textfield;
+      }
+      #app {
+        position: relative;
+        margin: 0 auto;
+        width: 1024px;
+        height: 768px;
+      }
+      .header {
+        /*padding-top: 50px;*/
+
+        height: 160px;
+        line-height: 180px;
+        text-align: center;
+      }
+      .header h1 {
+        margin: 0;
+        padding: 0;
+        font-weight: bold;
+        font-size: 4.75em;
+        font-family: Arial, Verdana, Sans-serif;
+        background-image: -webkit-gradient(linear, 0 0, 0 bottom, from(#ffde48), to(#ffa32b));
+        -webkit-text-stroke: 3px #b9001f;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 2px 2px 10px #ffde48;
+      }
+      .content {
+        padding: 10px;
+        padding-bottom: 30px;
+        height: calc(100% - 160px);
+      }
+      /* followers */
+      .followers {
+        float: left;
+        margin: 0;
+        padding: 13px 20px;
+        width: calc(100% - 190px);
+        height: 100%;
+        display: inline-block;
+        list-style: none;
+        border-top: solid 2px #ca3737;
+        border-left: solid 2px #ca3737;
+        background-color: #832626;
+        box-shadow: inset 0 0 20px #671010;
+        border-radius: 8px;
+        overflow: scroll;
+      }
+      .follower {
+        float: left;
+        margin: 5px;
+        border-radius: 5px;
+        text-align: center;
+        overflow: hidden;
+        background-color: #000;
+        background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(0, 0, 0, 0.5));
+      }
+      .follower img {
+        width: 100%;
+        transition: opacity 200ms linear;
+      }
+      .max-70-followers .follower {
+        width: 67px;
+        height: 67px;
+        line-height: 67px;
+      }
+      .min-70-followers .follower {
+        width: 45px;
+        height: 45px;
+        line-height: 45px;
+      }
+      .min-140-followers .follower {
+        width: 38px;
+        height: 38px;
+        line-height: 38px;
+      }
+      .active {
+        border: 2px solid #ffc548;
+        box-shadow: 0 0 13px #ffdd63;
+      }
+      .active img {
+        opacity: 1;
+      }
+      .inactive {
+        border-width: 2px 0 0 2px;
+        border-color: rgba(255, 255, 255, 0.19);
+        box-shadow: 2px 2px 5px #5c251f;
+      }
+      .inactive img {
+        opacity: 0.5;
+      }
+      /* winners */
+      .winner-area {
+        float: right;
+        padding: 10px;
+        padding-bottom: 20px;
+        width: 170px;
+        height: 100%;
+        text-align: center;
+        border-top: solid 2px #ca3737;
+        border-left: solid 2px #ca3737;
+        background-color: #832626;
+        box-shadow: inset 0 0 20px #671010;
+        border-radius: 8px;
+      }
+      .winner-area .title {
+        margin: 0;
+        font-size: 28px;
+        color: #ffd241;
+        text-shadow: 0 0 2px #ffd241;
+      }
+      .winners {
+        padding: 0;
+        margin: 20px 0;
+        height: 410px;
+        width: 100%;
+        list-style: none;
+        text-align: center;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+      .winner {
+        float: left;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-left: 0;
+        width: 100%;
+        text-align: center;
+        font-size: 22px;
+        color: #ffdf4b;
+      }
+      .winner .prize-type {
+        margin-bottom: 10px;
+        color: #fff;
+        text-shadow: 0 0 2px #fff;
+      }
+      .winner .prize-winner {
+        margin-bottom: 5px;
+      }
+      .winner .winner-img {
+        margin-left: 37px;
+        margin-bottom: 5px;
+        width: 76px;
+        height: 76px;
+        border-radius: 5px;
+        border: 2px solid #ffc548;
+        box-shadow: 0 0 13px #ffdd63;
+      }
+      .winner img {
+        width: 100%;
+        height: 100%;
+      }
+      .winner p {
+        margin: 0;
+        width: 100%;
+        word-break: break-word;
+      }
+      /* alert */
+      .alert-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        overflow: auto;
+        transition: all 200ms linear;
+      }
+      .con-container {
+        margin: 10% auto;
+        padding-top: 130px;
+        width: 350px;
+        height: 470px;
+        background-repeat: no-repeat;
+        background-size: 350px 470px;
+        text-align: center;
+      }
+      .start-get-container {
+        background-color: #ed4738;
+        border-radius: 10px;
+      }
+      .start-get-container h1 {
+        margin-bottom: 50px;
+        color: #ffd241;
+        text-shadow: 0 0 2px #b9001f;
+      }
+      .start-get-container b {
+        font-size: 44px;
+        text-shadow: 0 0 5px #b9001f;
+      }
+      .lucky-member-container {
+        padding-top: 160px;
+        background-image: url({!URLFor($Resource.LuckyDraw, 'assets/get-gift-bg.png')});
+      }
+      .lucky-member-container .info-img {
+        margin: 0 auto;
+        width: 110px;
+        height: 110px;
+        border: 3px solid #ffc548;
+        box-shadow: 0 0 13px #ffdd63;
+        text-align: center;
+        border-radius: 6px;
+      }
+      .lucky-member-container img {
+        width: 100%;
+        height: 100%;
+      }
+      .lucky-member-container .info-name {
+        margin-top: 20px;
+        margin-bottom: 70px;
+        font-size: 28px;
+        color: #ffdf4b;
+      }
+      /* buttons */
+      a.button-default {
+        display: block;
+        height: 50px;
+        background-repeat: no-repeat;
+      }
+      a.start {
+        margin-left: 14px;
+        width: 120px;
+        background-image: url({!URLFor($Resource.LuckyDraw, 'assets/start-default.png')});
+        background-size: 120px 50px;
+      }
+      a.start-disabled {
+        margin-left: 14px;
+        width: 120px;
+        background-image: url({!URLFor($Resource.LuckyDraw, 'assets/start-clicked.png')});
+        background-size: 120px 50px;
+      }
+      a.big-btn-default {
+        margin-left: 40px;
+        width: 269px;
+        background-size: 269px 50px;
+      }
+      a.start-get {
+        background-image: url({!URLFor($Resource.LuckyDraw, 'assets/start-get-default.png')});
+      }
+      a.start-get-active {
+        background-image: url({!URLFor($Resource.LuckyDraw, 'assets/start-get-clicked.png')});
+      }
+      a.continue {
+        background-image: url({!URLFor($Resource.LuckyDraw, 'assets/continue-default.png')});
+      }
+      a.continue-active {
+        background-image: url({!URLFor($Resource.LuckyDraw, 'assets/continue-cilcked.png')});
+      }
+
+      /* transition */
+      .fade {
+        transition: all .2s ease-in-out;
+        opacity: 0;
+      }
+      .fade-in {
+        opacity: 1;
+      }
+      .fold {
+        transition: all .2s ease-in-out;
+      }
+      .fold-left {
+        transform: translateX(-200px) translateY(-100px) scale(0.15);
+      }
+      .fold-in {
+        transform: scale(1, 1) translateX(0) translateY(0);
+      }
+      .fold-right {
+        transform: translateX(350px) translateY(-100px) scale(0.15);
+      }
+      .displayBG {
+        border: none;
+        width: 100%;
+        height: 100%;
+        display: block;
+        position: fixed;
+        text-align: center;
+      }
+      .loadingImg {
+        height: 20px;
+        width: 20px;
+        margin-top: 200px;
+      }
+    </style>
+  </head>
+  <body>
+    <apex:outputPanel rendered="{!!HasSettings}" id="panel">
+      <apex:form id="theform">
+        <apex:pageBlock mode="edit" id="thepageblock" title="抽奖设置">
+          <apex:pageBlockSection >
+            <apex:pageBlockSectionItem >
+              <apex:outputLabel value="抽奖总轮数" for="arrInputArea" />
+              <apex:outputPanel layout="block" styleClass="requiredInput">
+                <div class="requiredBlock"></div>
+                <!-- <apex:actionRegion> -->
+                  <apex:inputText id="arrInputArea" value="{!RoundCount}" onkeyup="this.value=this.value.replace(/\D/g,'')"/>
+                  <apex:actionSupport action="{!initRounds}" event="onchange" rerender="thepageblock" status="loading" />
+                <!-- </apex:actionRegion> -->
+              </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+              <apex:outputLabel value="允许参与抽奖的成员状态" />
+              <apex:repeat value="{!StatusShow}" var="status">
+                <apex:outputPanel >
+                  <apex:inputCheckbox value="{!status.IsAllow}" id="Status" />
+                  <apex:outputLabel value="{!status.Status}" style="text-align: right;font-size: 91%;font-weight: bold;color: #4a4a56;" for="Status"
+                  />
+                </apex:outputPanel>
+              </apex:repeat>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+              <apex:outputLabel value="活动标题" for="subject" />
+              <apex:outputPanel layout="block" styleClass="requiredInput">
+                <div class="requiredBlock"></div>
+                <apex:inputText id="subject" value="{!CampaignName}" />
+              </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+              <apex:outputLabel value="启用标题滚动动画" for="enableTransition" />
+              <apex:outputPanel >
+                <apex:inputCheckbox id="enableTransition" value="{!enableTransition}" />
+              </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+          </apex:pageBlockSection>
+          <apex:variable value="{!0}" var="i" id="indexVar" />
+          <apex:repeat value="{!Rounds}" var="round" id="repeat">
+            <apex:pageBlockSection title="第{!i+1}轮（抽奖顺序为从下到上）" id="pgbks">
+              <apex:pageBlockSectionItem >
+                <apex:outputLabel value="奖项数量" for="arrInputArea" />
+                <apex:outputPanel layout="block" styleClass="requiredInput">
+                  <div class="requiredBlock"></div>
+                    <apex:inputText id="arrInputArea" value="{!round.count}" onkeyup="this.value=this.value.replace(/\D/g,'')"/>
+                    <apex:actionSupport action="{!initPrizes}" event="onchange" rerender="thepageblock" status="loading">
+                    </apex:actionSupport>
+                </apex:outputPanel>
+              </apex:pageBlockSectionItem>
+              <apex:pageBlockSectionItem id="pgbksi">
+                <apex:outputLabel value="模板消息" for="inputtext" />
+                <apex:outputPanel layout="block" styleClass="requiredInput" id="outputpanel">
+                  <div class="requiredBlock"></div>
+
+                  <apex:inputhidden id="inputtext_lkold" />
+                  <apex:inputText id="inputtext" />
+                  <a title="WeChat Notification Template (New Window)" tabindex="4" onclick="setLastMousePosition(event),openTemplatePopUp(this)"
+                    id="{!NotificationTemplatePrefix}Template_0_lkwgt{!i}">
+                    <img title="WeChat Notification Template(New Window)" onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';"
+                      onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';"
+                      onblur="this.className = 'lookupIcon';" class="lookupIcon" alt="Template Lookup (New Window)" src="/s.gif"/>
+                  </a>
+                </apex:outputPanel>
+              </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="2">
+              <apex:repeat value="{!round.prizes}" var="item">
+                <apex:pageBlockSectionItem >
+                  <apex:outputLabel value="奖项" for="arrInputArea" />
+                  <apex:outputPanel layout="block" styleClass="requiredInput">
+                    <div class="requiredBlock"></div>
+                    <apex:inputText id="arrInputArea" value="{!item.status}" />
+                  </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                  <apex:outputLabel value="中奖人数" for="arrInputArea" />
+                  <apex:outputPanel layout="block" styleClass="requiredInput">
+                    <div class="requiredBlock"></div>
+                    <apex:inputText id="arrInputArea" value="{!item.count}" onkeyup="this.value=this.value.replace(/\D/g,'')"/>
+                  </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                  <apex:outputLabel value="奖品" for="arrInputArea" />
+                  <apex:outputPanel layout="block" styleClass="requiredInput">
+                    <div class="requiredBlock"></div>
+                    <apex:inputText id="arrInputArea" value="{!item.type}" />
+                  </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem />
+                <apex:pageBlockSectionItem />
+                <apex:pageBlockSectionItem />
+              </apex:repeat>
+              <apex:variable var="i" value="{!i + 1}" />
+            </apex:pageBlockSection>
+          </apex:repeat>
+          <!-- <apex:outputPanel >
+            <apex:outputText value="{!LuckyDrawSettings}" />
+          </apex:outputPanel> -->
+          <apex:pageBlockButtons >
+            <apex:commandButton value="Save" action="{!saveSettings}" />
+          </apex:pageBlockButtons>
+          <apex:actionStatus id="loading" layout="block">
+            <apex:facet name="start">
+              <div class="overlayBackground displayBG">
+                <img src="/img/loading.gif" id="loading" class="loadingImg" />
+              </div>
+            </apex:facet>
+          </apex:actionStatus>
+        </apex:pageBlock>
+      </apex:form>
+      <script>
+        var templatenameid;
+        function openTemplatePopUp(field) {
+          console.log(field);
+          var anchortagid = field.id;
+          var index;
+          var subId;
+          var repeatId;
+          if (anchortagid.length == 20) {
+            repeatId = anchortagid.substring(19, 20);
+            index = anchortagid.substring(12, 13);
+            subId = anchortagid.substring(0, 3);
+          } else {
+            repeatId = anchortagid.substring(16, 17);
+            index = anchortagid.substring(9, 10);
+            subId = '';
+          }
+		      templatenameid = 'page:theform:thepageblock:repeat:' + repeatId + ':pgbks:pgbksi:inputtext';
+          if (field != null) {
+            field.href = "JavaScript:openLookup('/_ui/common/data/LookupPage?lkfm=editPage&lknm='+templatenameid+'&lktp=" +
+              subId + "',670,'1','&lksrch=' + escapeUTF(getElementByIdCS(templatenameid).value.substring(0, 80)))";
+          }
+        }
+      </script>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!HasSettings}">
+      <apex:form >
+        <apex:actionFunction name="editSettings" action="{!editSettings}"></apex:actionFunction>
+      </apex:form>
+      <img onclick="editSettings();" class="settings-icon" src="{!URLFor($Resource.LuckyDraw, 'assets/cogwheel.png')}" alt="null" title="Settings"/>
+      <div id="app">
+        <div class="header">
+          <h1 v-if="!subjectInfo.enableTransition">{{subjectInfo.subject}}</h1>
+          <marquee v-if="subjectInfo.enableTransition" behavior="alternate" direction="left" scrollamount="50" scrolldelay="1000">
+            <h1>{{subjectInfo.subject}}</h1>
+          </marquee>
+        </div>
+        <div class="content">
+          <ul class="followers" v-bind:class="{'max-70-followers': followers.length <= 70, 'min-70-followers': followers.length > 70 && followers.length <= 140, 'min-140-followers': followers.length > 140}">
+            <li class="follower" v-bind:class="{active: follower.selected, inactive: !follower.selected}" v-for="follower in followers">
+              <img v-bind:src="follower.Url" />
+            </li>
+          </ul>
+
+          <div class="winner-area">
+            <p class="title">获奖名单</p>
+            <ul class="winners">
+              <li class="winner" v-for="prize in prizes" v-show="prize.winners.length > 0">
+                <p class="prize-type">{{prize.status}}</p>
+                <div class="prize-winner" v-for="winner in prize.winners">
+                  <div class="winner-img">
+                    <img v-bind:src="winner.Url" />
+                  </div>
+                  <p class="winner-name" v-text="winner.Name"></p>
+                </div>
+              </li>
+            </ul>
+            <a class="button-default" v-on:click="showQuantity" v-bind:class="{'start': enableStart, 'start-disabled': !enableStart}"></a>
+          </div>
+        </div>
+
+        <div class="alert-bg fade" v-show="showQuantityArea" v-bind:class="fadeTransition">
+          <div class="con-container start-get-container" v-bind:class="foldTransition">
+            <h1>开始第
+              <b>{{subjectInfo.currentRound}}</b> 轮抽奖</h1>
+            <a class="button-default big-btn-default" v-on:click="initCurrentData" v-bind:class="{'start-get': !disabledStartGet, 'start-get-active': disabledStartGet}"></a>
+          </div>
+        </div>
+
+        <div class="alert-bg fade" v-show="showWinner" v-bind:class="fadeTransition">
+          <div class="con-container lucky-member-container fold" v-bind:class="foldTransition">
+            <p class="info-img">
+              <img v-bind:src="currentWinner.Url" />
+              <br/>
+            </p>
+            <p class="info-name">{{currentWinner.Name}}</p>
+            <a class="button-default big-btn-default" v-on:click="runLuckyDraw" v-bind:class="{'continue': !disabledContinue, 'continue-active': disabledContinue}"></a>
+          </div>
+        </div>
+      </div>
+      <style>
+        body {
+          background: url({!URLFor($Resource.LuckyDraw, 'assets/followers.png')}), repeating-linear-gradient(135deg, #ea3f3f,  #ea3f3f 10px, #fd4545 10px, #fd4545 20px) fixed;
+        }
+        .settings-icon {
+          opacity: 0;
+          position: absolute; 
+          top: 40px; 
+          right: 20px;"
+          width: 40px;
+          height: 40px;
+          transition: opacity 1s;
+        }
+        .settings-icon:hover {
+          opacity: 1;
+        }
+      </style>
+      <script>
+        // choose template
+        var app = new Vue({
+          el: '#app',
+          created() {
+            this.subjectInfo = JSON.parse(JSON.stringify({!LuckyDrawSettings}));
+            this.getMembers();
+          },
+          data: {
+            followers: [],
+            // winners: [],
+            subjectInfo: {},
+            prizes: [],
+            localPrizes: [],
+            currentWinner: {},
+            enableStart: true,
+            showQuantityArea: false,
+            maxQuantity: 0,
+            showWinner: false,
+            disabledStartGet: false,
+            disabledContinue: false,
+            notificationTemplateId: '',
+            fadeTransition: {
+              'fade-in': false
+            },
+            foldTransition: {
+              'fold-left': false,
+              'fold-in': false,
+              'fold-right': true
+            }
+          },
+          methods: {
+            getMembers() {
+              var campaignId = '{!campaignId}';
+              var accountId = '{!accountId}';
+              var logId = '{!logId}';
+              Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.LuckyDrawController.getMembers}', campaignId,
+                accountId, this.subjectInfo.drawStatus, (result, event) => {
+                  console.log(result);
+                  if(result){
+                    this.followers = result.map((follower) => {
+                      follower.selected = false;
+                      return follower;
+                    });
+                  } else {
+                    /* this.followers.push({Id: 'test', Name: '31Mish', selected: false, Url: "{!URLFor($Resource.LuckyDraw, 'assets/timg.jpeg')}"}); */
+                  }
+                })
+            },
+            showQuantity() {
+              if (this.enableStart) {
+                this.enableStart = false;
+                this.showQuantityArea = true;
+                setTimeout(() => {
+                  this.fadeTransition = {
+                    'fade-in': true,
+                  };
+                  this.foldTransition = {
+                    'fold-in': true,
+                    'fold-left': false,
+                    'fold-right': false
+                  };
+                }, 10);
+              }
+            },
+            initCurrentData() {
+              if (!this.disabledStartGet) {
+                this.showQuantityArea = false;
+
+                for (var index = 0; index < this.subjectInfo.roundsArray.length; index++) {
+                  var item = this.subjectInfo.roundsArray[index];
+                  console.log(item);
+                  if (this.subjectInfo.currentRound === item.roundOrder) {
+                    this.prizes = item.prizes;
+                    this.currentCount = this.prizes.length - 1;
+                    this.maxQuantity = this.prizes[this.currentCount].count;
+                    this.currentWinners = this.prizes[this.currentCount].winners || [];
+
+                    this.notificationTemplateId = item.notificationTemplateId;
+                    this.runLuckyDraw();
+                  }
+                };
+                setTimeout(() => {
+                  this.fadeTransition = {
+                    'fade-in': false,
+                  };
+                  this.foldTransition = {
+                    'fold-in': false,
+                    'fold-left': false,
+                    'fold-right': true
+                  };
+                }, 10);
+              }
+            },
+            runLuckyDraw() {
+              if (!this.disabledContinue) {
+                this.fadeTransition = {
+                  'fade-in': false,
+                };
+                this.foldTransition = {
+                  'fold-in': false,
+                  'fold-left': false,
+                  'fold-right': true
+                };
+
+                setTimeout(() => {
+                  if (this.currentWinner && this.currentWinner.Id) {
+                    this.currentWinners.unshift(this.currentWinner);
+                    this.prizes[this.currentCount].winners = this.currentWinners;
+                    this.showWinner = false;
+                    this.currentWinner = {};
+                  }
+
+                  if (this.currentWinners.length < this.maxQuantity) {
+                    this.randomMembers();
+                  } else if (this.currentWinners.length == this.maxQuantity) {
+                    console.log(this.currentWinners);
+                    var winnerIds = this.currentWinners.map((w) => {
+                      return w.Id;
+                    });
+                    console.log(winnerIds);
+                    Visualforce.remoting.Manager.invokeAction(
+                      '{!$RemoteAction.LuckyDrawController.updateMemberStatus}', winnerIds, this.prizes[this.currentCount].status, (result, event) => {
+                        console.log(result);
+                      });
+
+                    for(var winnerIndex = 0; winnerIndex < winnerIds.length; winnerIndex++){
+                      Visualforce.remoting.Manager.invokeAction(
+                      '{!$RemoteAction.LuckyDrawController.sendNotification}', winnerIds[winnerIndex], this.notificationTemplateId, (result, event) => {
+                        console.log(result);
+                      });
+                    }
+                    
+                    this.prizes[this.currentCount].winners = this.currentWinners;
+                    console.log(this.subjectInfo);
+                    this.currentCount -= 1;
+                    if (this.currentCount < 0) {
+                      console.log(this.subjectInfo);
+                      this.subjectInfo.currentRound += 1;
+
+                      if (this.subjectInfo.currentRound <= this.subjectInfo.roundsArray.length) {
+                        this.enableStart = true;
+                      }
+                      Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.LuckyDrawController.updateLogData}', "{!logId}",
+                        JSON.stringify(this.subjectInfo), (result, event) => {
+                          console.log(result);
+                        });
+                    } else {
+                      this.maxQuantity = this.prizes[this.currentCount].count;
+                      this.currentWinners = this.prizes[this.currentCount].winners || [];
+                      this.disabledContinue = false;
+                      this.runLuckyDraw();
+                    }
+                  }
+                }, 200);
+              }
+            },
+            showWinnerInfo() {
+              this.foldTransition = {
+                'fold-in': false,
+                'fold-left': true,
+                'fold-right': false
+              };
+              setTimeout(() => {
+                this.fadeTransition = {
+                  'fade-in': true,
+                };
+                this.foldTransition = {
+                  'fold-in': true,
+                  'fold-left': false,
+                  'fold-right': false
+                };
+              }, 10);
+
+              this.showWinner = true;
+              if (this.currentCount === 0 &&
+                this.currentWinners.length === this.maxQuantity - 1) {
+
+                this.disabledContinue = true;
+
+                setTimeout(() => {
+                  this.fadeTransition = {
+                    'fade-in': false,
+                  };
+                  this.foldTransition = {
+                    'fold-in': false,
+                    'fold-left': false,
+                    'fold-right': true
+                  };
+
+                  setTimeout(() => {
+                    if (this.currentWinner.Id) {
+                      this.currentWinners.unshift(this.currentWinner);
+                      this.prizes[this.currentCount].winners = this.currentWinners;
+                      this.showWinner = false;
+                      this.currentWinner = {};
+                      this.disabledContinue = false;
+                      this.runLuckyDraw();
+
+                    }
+                  }, 200);
+                }, 1000);
+              }
+            },
+            randomMembers() {
+              let i = 0;
+              let lastRandomNum;
+              const handler = () => {
+                let randomNum = Math.floor(Math.random() * this.followers.length);
+                if (randomNum === lastRandomNum) {
+                  handler();
+                } else {
+                  if (i > 0 && this.followers[lastRandomNum]) {
+                    this.followers[lastRandomNum].selected = false;
+                  }
+                  this.followers[randomNum].selected = true;
+                  lastRandomNum = randomNum;
+                  i++;
+                  if (i < 10) {
+                    setTimeout(handler, 100);
+                  } else {
+                    setTimeout(() => {
+                      const winner = this.followers.splice(randomNum, 1);
+                      this.currentWinner = winner[0];
+                      this.showWinnerInfo();
+                    }, 500);
+                  }
+                }
+              }
+              setTimeout(handler, 100);
+            }
+          }
+        })
+      </script>
+    </apex:outputPanel>
+  </body>
+  </html>
+</apex:page>

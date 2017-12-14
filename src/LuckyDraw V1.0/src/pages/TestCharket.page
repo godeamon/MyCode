@@ -1,0 +1,4 @@
+<apex:page >
+  <apex:iframe src="/apex/Charket__CharketApp?isdtp=vw&inContextPane=true&sfdcIFrameOrigin=https%3A%2F%2Fmeginfolmo.my.salesforce.com"/>
+  <apex:iframe src="/apex/Charket__CharketApp?isdtp=vw&inContextPane=true" />
+</apex:page>

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>An event log that you or Salesforce Customer Support can use to diagnose issues in the Checkout Management App.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>sfcma__Category__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Category</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>API Callout Request limits exceeded</fullName>
+                    <default>false</default>
+                    <label>API Callout Request limits exceeded</label>
+                </value>
+                <value>
+                    <fullName>App connection with Stripe failure</fullName>
+                    <default>false</default>
+                    <label>App connection with Stripe failure</label>
+                </value>
+                <value>
+                    <fullName>Batch Failure</fullName>
+                    <default>false</default>
+                    <label>Batch Failure</label>
+                </value>
+                <value>
+                    <fullName>Create Transaction failure</fullName>
+                    <default>false</default>
+                    <label>Create Transaction failure</label>
+                </value>
+                <value>
+                    <fullName>Get Invoice item failure</fullName>
+                    <default>false</default>
+                    <label>Get Invoice item failure</label>
+                </value>
+                <value>
+                    <fullName>Get Subscription failure</fullName>
+                    <default>false</default>
+                    <label>Get Subscription failure</label>
+                </value>
+                <value>
+                    <fullName>Import Existing Data failure</fullName>
+                    <default>false</default>
+                    <label>Import Existing Data failure</label>
+                </value>
+                <value>
+                    <fullName>Internal System Error</fullName>
+                    <default>false</default>
+                    <label>Internal System Error</label>
+                </value>
+                <value>
+                    <fullName>Number of sent emails exceeded</fullName>
+                    <default>false</default>
+                    <label>Number of sent emails exceeded</label>
+                </value>
+                <value>
+                    <fullName>Rest Callout Queue Failure</fullName>
+                    <default>false</default>
+                    <label>Rest Callout Queue Failure</label>
+                </value>
+                <value>
+                    <fullName>Stripe duplicated event</fullName>
+                    <default>false</default>
+                    <label>Stripe duplicated event</label>
+                </value>
+                <value>
+                    <fullName>Stripe Event Processor failure</fullName>
+                    <default>false</default>
+                    <label>Stripe Event Processor failure</label>
+                </value>
+                <value>
+                    <fullName>Stripe Invalid event received</fullName>
+                    <default>false</default>
+                    <label>Stripe Invalid event received</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>sfcma__Data__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Data</label>
+        <length>32000</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>sfcma__Exception__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Exception</label>
+        <length>32000</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>sfcma__Severity__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Severity</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Error</fullName>
+                    <default>false</default>
+                    <label>Error</label>
+                </value>
+                <value>
+                    <fullName>Warning</fullName>
+                    <default>false</default>
+                    <label>Warning</label>
+                </value>
+                <value>
+                    <fullName>Info</fullName>
+                    <default>false</default>
+                    <label>Info</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>sfcma__StackTraceId__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Stack Trace ID</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Checkout Log</label>
+    <listViews>
+        <fullName>sfcma__All</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <displayFormat>Log-{0000}</displayFormat>
+        <label>Log Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Checkout Logs</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

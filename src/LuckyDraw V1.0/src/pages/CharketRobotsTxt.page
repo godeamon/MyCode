@@ -1,0 +1,4 @@
+<apex:page contentType="text/plain">
+# robots.txt
+User-agent: *
+</apex:page>

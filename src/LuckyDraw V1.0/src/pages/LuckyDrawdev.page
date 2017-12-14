@@ -1,0 +1,352 @@
+<apex:page controller="LuckyDrawController" action="{!validateSettings}" showHeader="false" id="page">
+  <html xmlns:v-bind="http://www.charket.com/" xmlns:v-on="http://www.charket.com/">
+  <head>
+    <script data-require="vue.js@*" data-semver="10.0.26" src="{!URLFor($Resource.LuckyDraw, 'assets/vue.min.js')}"></script>
+    <style>
+      /* Styles go here */
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        height: 100%;
+      }
+
+      body {
+        padding: 0;
+        width: 100%;
+        height: 100%;
+      }
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none !important;
+        margin: 0;
+      }
+      input[type="number"] {
+        -moz-appearance: textfield;
+      }
+      #app .lucky-member-container {
+        padding-top: 160px;
+        background-image: url({!URLFor($Resource.LuckyDraw, 'assets/get-gift-bg.png')});
+      }
+      #app a.start {
+        margin-left: 14px;
+        width: 120px;
+        background-image: url({!URLFor($Resource.LuckyDraw, 'assets/start-default.png')});
+        background-size: 120px 50px;
+      }
+      #app a.start-disabled {
+        margin-left: 14px;
+        width: 120px;
+        background-image: url({!URLFor($Resource.LuckyDraw, 'assets/start-clicked.png')});
+        background-size: 120px 50px;
+      }
+      #app a.start-get {
+        background-image: url({!URLFor($Resource.LuckyDraw, 'assets/start-get-default.png')});
+      }
+      #app a.continue {
+        background-image: url({!URLFor($Resource.LuckyDraw, 'assets/continue-default.png')});
+      }
+    </style>
+  </head>
+  <body>
+    <apex:outputPanel rendered="{!!HasSettings}" id="panel">
+      <apex:form id="theform">
+        <apex:pageBlock mode="edit" id="thepageblock" title="抽奖设置">
+        <!--<apex:pageMessages id="showmsg"></apex:pageMessages>-->
+          <apex:pageBlockSection >
+            <apex:pageBlockSectionItem >
+              <apex:outputLabel value="抽奖总轮数" for="arrInputArea" />
+              <apex:outputPanel layout="block" styleClass="requiredInput">
+                <div class="requiredBlock"></div>
+                <!-- <apex:actionRegion> -->
+                  <apex:inputText id="arrInputArea" value="{!RoundCount}" onkeyup="this.value=this.value.replace(/\D/g,'')" styleClass="notBlank"/>
+                  <apex:actionSupport action="{!initRounds}" event="onchange" rerender="thepageblock" status="loading" />
+                <!-- </apex:actionRegion> -->
+              </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+              <apex:outputLabel value="允许参与抽奖的成员状态" />
+              <apex:repeat value="{!StatusShow}" var="status">
+                <apex:outputPanel >
+                  <apex:inputCheckbox value="{!status.IsAllow}" id="Status" />
+                  <apex:outputLabel value="{!status.Status}" style="text-align: right;font-size: 91%;font-weight: bold;color: #4a4a56;" for="Status"
+                  />
+                </apex:outputPanel>
+              </apex:repeat>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+              <apex:outputLabel value="活动标题" for="subject" />
+              <apex:outputPanel layout="block" styleClass="requiredInput">
+                <div class="requiredBlock"></div>
+                <apex:inputText id="subject" value="{!CampaignName}" styleClass="notBlank" />
+                <!--<apex:outputpanel>
+                <apex:message for="subject" styleClass="errorMsg" />
+                </apex:outputPanel>-->
+              </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+              <apex:outputLabel value="启用标题滚动动画" for="enableTransition" />
+              <apex:outputPanel >
+                <apex:inputCheckbox id="enableTransition" value="{!enableTransition}" />
+              </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+          </apex:pageBlockSection>
+          <apex:variable value="{!0}" var="i" id="indexVar" />
+          <apex:repeat value="{!Rounds}" var="round" id="repeat">
+            <apex:pageBlockSection title="第{!i+1}轮（抽奖顺序为从下到上）" >
+              <apex:pageBlockSectionItem >
+                <apex:outputLabel value="奖项数量" for="arrInputArea" />
+                <apex:outputPanel layout="block" styleClass="requiredInput">
+                  <div class="requiredBlock"></div>
+                    <apex:inputText id="arrInputArea" value="{!round.count}" onkeyup="this.value=this.value.replace(/\D/g,'')" styleClass="notBlank"/>
+                    <apex:actionSupport action="{!initPrizes}" event="onchange" rerender="thepageblock" status="loading">
+                    </apex:actionSupport>
+                </apex:outputPanel>
+              </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="2" id="pgbks">
+            <apex:variable value="{!0}" var="j" id="indexVar" />
+            <apex:pageBlockSectionItem />
+              <apex:repeat value="{!round.prizes}" var="item" id="itemrepeat">
+                <apex:pageBlockSectionItem >
+                  <apex:outputLabel value="奖项" for="arrInputArea" />
+                  <apex:outputPanel layout="block" styleClass="requiredInput">
+                    <div class="requiredBlock"></div>
+                    <apex:inputText id="arrInputArea" value="{!item.status}" styleClass="notBlank"/>
+                  </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                  <apex:outputLabel value="中奖人数" for="arrInputArea" />
+                  <apex:outputPanel layout="block" styleClass="requiredInput">
+                    <div class="requiredBlock"></div>
+                    <apex:inputText id="arrInputArea" value="{!item.count}" onkeyup="this.value=this.value.replace(/\D/g,'')" styleClass="notBlank"/>
+                  </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                  <apex:outputLabel value="奖品" for="arrInputArea" />
+                  <apex:outputPanel layout="block" styleClass="requiredInput">
+                    <div class="requiredBlock"></div>
+                    <apex:inputText id="arrInputArea" value="{!item.type}" styleClass="notBlank"/>
+                  </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="pgbksi">
+                <apex:outputLabel value="模板消息" for="inputtext" />
+                <apex:outputPanel layout="block" styleClass="requiredInput" id="outputpanel">
+                  <apex:inputhidden value="{!item.notificationTemplateId}" id="inputtext_lkid" />
+                  <apex:inputhidden value="{!item.notificationTemplateName}" id="inputtext_lkold" />
+                  <apex:inputText value="{!item.notificationTemplateName}" id="inputtext"/>
+                  <a title="WeChat Notification Template (New Window)" tabindex="4" onclick="setLastMousePosition(event),openTemplatePopUp(this)"
+                    id="{!NotificationTemplatePrefix}Template_0_lkwgt{!i}{!j}">
+                    <img title="WeChat Notification Template(New Window)" onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';"
+                      onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';"
+                      onblur="this.className = 'lookupIcon';" class="lookupIcon" alt="Template Lookup (New Window)" src="/s.gif"/>
+                  </a>
+                </apex:outputPanel>
+              </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem />
+                <apex:pageBlockSectionItem />
+              </apex:repeat>
+              <apex:variable var="j" value="{!j + 1}" />
+              <apex:variable var="i" value="{!i + 1}" />
+            </apex:pageBlockSection>
+          </apex:repeat>
+          <apex:pageBlockButtons >
+            <apex:commandButton value="Save" action="{!saveSettings}" onclick="return validate()"/>
+            <apex:commandButton value="Reset" action="{!reSet}"/>
+          </apex:pageBlockButtons>
+          <apex:actionStatus id="loading" layout="block">
+            <apex:facet name="start">
+              <div class="overlayBackground displayBG">
+                <img src="/img/loading.gif" id="loading" class="loadingImg" />
+              </div>
+            </apex:facet>
+          </apex:actionStatus>
+        </apex:pageBlock>
+      </apex:form>
+      <script>
+        var templatenameid;
+        function openTemplatePopUp(field) {
+          console.log(field);
+          var anchortagid = field.id;
+          var index;
+          var subId;
+          var repeatId;
+          var testId;
+          if (anchortagid.length == 21) {
+            testId = anchortagid.substring(20, 21);
+            repeatId = anchortagid.substring(19, 20);
+            index = anchortagid.substring(12, 13);
+            subId = anchortagid.substring(0, 3);
+          } else {
+            testId = anchortagid.substring(17, 18);
+            repeatId = anchortagid.substring(16, 17);
+            index = anchortagid.substring(9, 10);
+            subId = '';
+          }
+          templatenameid = 'page:theform:thepageblock:repeat:' + repeatId + ':pgbks:itemrepeat:' + testId + ':pgbksi:inputtext';
+          if (field != null) {
+            field.href = "JavaScript:openLookup('/_ui/common/data/LookupPage?lkfm=editPage&lknm='+templatenameid+'&lktp=" +
+              subId + "',670,'1','&lksrch=' + escapeUTF(getElementByIdCS(templatenameid).value.substring(0, 80)))";
+          }
+        }
+      </script>
+      <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+      <script src="https://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+      <script>
+        if(typeof jQuery != 'undefined'){
+            $j =jQuery.noConflict();
+        }
+        function jq_addError(me,msg){
+            if(!($j(me).hasClass('error'))){
+                $j(me).addClass("error");
+                $j(me).parent().append("<div class='errorMsg'>" + msg + "</div>");
+            }
+            else{
+                $j(me).siblings('.errorMsg').remove();
+                $j(me).parent().append("<div class='errorMsg'>" + msg + "</div>");
+            }
+        }
+        
+        function jq_removeError(me){
+            if($j(me).hasClass('error')){
+                $j(me).removeClass("error");
+                $j(me).siblings('.errorMsg').remove();
+            }           
+        }
+        
+        function validate(){
+            var b = true;
+            $j('.notBlank').each(function(){
+                if($j(this).val().length == 0){
+                    jq_addError($j(this),"<b>Error:</b>This field is required");
+                    b = false;
+                }
+                else{
+                    jq_removeError($j(this));
+                }               
+            });
+            return b;
+        }
+      </script> 
+
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!HasSettings}">
+      <apex:form >
+        <apex:actionFunction name="editSettings" action="{!editSettings}"></apex:actionFunction>
+      </apex:form>
+      <img onclick="editSettings();" class="settings-icon" src="{!URLFor($Resource.LuckyDraw, 'assets/cogwheel.png')}" alt="null" title="Settings"/>
+      <div id="app">
+        <!-- <div class="header">
+          <h1 v-if="!luckyDrawSettings.enableTransition" v-bind:value="luckyDrawSettings.subject"></h1>
+          <marquee v-if="luckyDrawSettings.enableTransition" behavior="alternate" direction="left" scrollamount="50" scrolldelay="1000">
+            <h1 v-bind:value="luckyDrawSettings.subject"></h1>
+          </marquee>
+        </div>
+        <div class="content">
+          <ul class="followers" v-bind:class="{'max-70-followers': followers.length <= 70, 'min-70-followers': followers.length > 70 && followers.length <= 140, 'min-140-followers': followers.length > 140}">
+            <li class="follower" v-bind:class="{active: follower.selected, inactive: !follower.selected}" v-for="follower in followers">
+              <img v-bind:src="follower.Url" />
+            </li>
+          </ul>
+
+          <div class="winner-area">
+            <p class="title">获奖名单</p>
+            <ul class="winners">
+              <li class="winner" v-for="prize in prizes" v-show="prize.winners.length > 0">
+                <p class="prize-type" v-bind:value="prize.status"></p>
+                <div class="prize-winner" v-for="winner in prize.winners">
+                  <div class="winner-img">
+                    <img v-bind:src="winner.Url" />
+                  </div>
+                  <p class="winner-name" v-text="winner.Name"></p>
+                </div>
+              </li>
+            </ul>
+            <a class="button-default" v-on:click="showQuantity" v-bind:class="{'start': enableStart, 'start-disabled': !enableStart}"></a>
+          </div>
+        </div>
+
+        <div class="alert-bg fade" v-show="showQuantityArea" v-bind:class="fadeTransition">
+          <div class="con-container start-get-container" v-bind:class="foldTransition">
+            <h1>开始第
+              <b>{{luckyDrawSettings.currentRound}}</b> 轮抽奖</h1>
+            <a class="button-default big-btn-default" v-on:click="initCurrentData" v-bind:class="{'start-get': !disabledStartGet, 'start-get-active': disabledStartGet}"></a>
+          </div>
+        </div>
+
+        <div class="alert-bg fade" v-show="showWinner" v-bind:class="fadeTransition">
+          <div class="con-container lucky-member-container fold" v-bind:class="foldTransition">
+            <p class="info-img">
+              <img v-bind:src="currentWinner.Url" />
+              <br/>
+            </p>
+            <p class="info-name">{{currentWinner.Name}}</p>
+            <a class="button-default big-btn-default" v-on:click="runLuckyDraw" v-bind:class="{'continue': !disabledContinue, 'continue-active': disabledContinue}"></a>
+          </div>
+        </div> -->
+      </div>
+      <style>
+        body {
+          background: url({!URLFor($Resource.LuckyDraw, 'assets/followers.png')}), repeating-linear-gradient(135deg, #ea3f3f,  #ea3f3f 10px, #fd4545 10px, #fd4545 20px) fixed;
+        }
+        .settings-icon {
+          opacity: 0;
+          position: absolute; 
+          top: 40px; 
+          right: 20px;"
+          width: 40px;
+          height: 40px;
+          transition: opacity 1s;
+        }
+        .settings-icon:hover {
+          opacity: 1;
+        }
+      </style>
+      <script>
+        var luckyDrawSettings = {!LuckyDrawSettings}
+        var campaignId = '{!campaignId}'
+        var accountId = '{!accountId}'
+        var logId = '{!logId}'
+        const getMembers = function () {
+          var self = this
+          Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.LuckyDrawController.getMembers}', campaignId,
+            accountId, luckyDrawSettings.drawStatus, function (result, event) {
+              if (result) {
+                self.followers = result.map((follower) => {
+                  follower.selected = false
+                  return follower
+                })
+              } else {
+                console.error(result)
+              }
+            })
+        }
+        const updateMemberStatus = function (winnerIds, status) {
+          Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.LuckyDrawController.updateMemberStatus}', 
+            winnerIds, status, function (result, event) {
+              console.log(result);
+            });
+        }
+        
+        const sendNotification = function (winnerId, notificationTemplateId) {
+          Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.LuckyDrawController.sendNotification}', 
+            winnerId, notificationTemplateId, function (result, event) {
+              console.log(result);
+            });
+        }
+
+        const updateLogData = function (settings) {
+          console.log(logId);
+          console.log(JSON.stringify(settings));
+          Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.LuckyDrawController.updateLogData}', 
+            logId, settings, function (result, event) {
+              console.log(result);
+            });
+        }
+      </script>
+      <script src="https://localhost:9000/app.js"></script>
+    </apex:outputPanel>
+  </body>
+  </html>
+</apex:page>

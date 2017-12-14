@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <description>Custom Setting for tracking of what email notifications are enabled, and if they’re enabled for the partner and/or the customer</description>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>sfcma__CustomerAutoRenewal__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Send a reminder email 5 days before a customer&apos;s subscription is auto-renewed and billed.</description>
+        <externalId>false</externalId>
+        <label>Customer Auto-Renewal Reminder</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>sfcma__CustomerCancellationConfirmation__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Send an email to the customer after a cancellation request has been processed.</description>
+        <externalId>false</externalId>
+        <label>Customer Cancellation Confirmation</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>sfcma__CustomerFreeTrialSignup__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>When a prospective customer signs up for a free trial, send an email introducing your company.</description>
+        <externalId>false</externalId>
+        <label>Customer Free Trial Signup</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>sfcma__CustomerLicenseChanges__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>When seats are added or removed from a customer&apos;s license, send an email confirming the changes.</description>
+        <externalId>false</externalId>
+        <label>Customer License Changes</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>sfcma__CustomerPaymentConfirmation__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Send an email to the customer after a payment is processed.</description>
+        <externalId>false</externalId>
+        <label>Customer Payment Confirmation</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>sfcma__CustomerPaymentDeclined__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>If a customer&apos;s credit card is declined, send an email alerting the customer.</description>
+        <externalId>false</externalId>
+        <label>Customer Payment Declined</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>sfcma__CustomerPurchaseConfirmation__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>When a customer buys your offering, send a thank you email confirming the purchase.</description>
+        <externalId>false</externalId>
+        <label>Customer Purchase Confirmation</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>sfcma__CustomerRefundNotification__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Send an email to the customer after a refund has been processed.</description>
+        <externalId>false</externalId>
+        <label>Customer Refund Notification</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>sfcma__CustomerTrialExpiringSoon__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Send a reminder email 1 day before a prospective customer&apos;s trial expires that explains how to purchase your offering.</description>
+        <externalId>false</externalId>
+        <label>Customer Trial Expiring Soon</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>sfcma__LogoEmailNotifications__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Logo for Email Notifications</description>
+        <externalId>false</externalId>
+        <label>Logo for Email Notifications</label>
+        <length>18</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>sfcma__PartnerCancellationConfirmation__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Receive an email confirming that a customer&apos;s cancellation request has been processed.</description>
+        <externalId>false</externalId>
+        <label>Partner Cancellation Confirmation</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>sfcma__PartnerCantConnectStripe__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Receive an email when the AppExchange can&apos;t connect to your Stripe account.</description>
+        <externalId>false</externalId>
+        <label>Partner Can&apos;t Connect to Stripe</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>sfcma__PartnerFreeTrialExpired__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Receive an email if a free trial expires, but the prospective customer hasn&apos;t started a subscription.</description>
+        <externalId>false</externalId>
+        <label>Partner Free Trial Expired</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>sfcma__PartnerFreeTrialSignup__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Receive an email when a prospective customer signs up for a free trial.</description>
+        <externalId>false</externalId>
+        <label>Partner Free Trial Signup</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>sfcma__PartnerLicenseChanges__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Receive an email when seats are added or removed from a customer&apos;s license.</description>
+        <externalId>false</externalId>
+        <label>Partner License Changes</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>sfcma__PartnerPurchaseConfirmation__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Receive an email when a customer buys your offering.</description>
+        <externalId>false</externalId>
+        <label>Partner Purchase Confirmation</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>sfcma__PartnerTrialExpiringSoon__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Send a reminder email 1 day before a prospective customer&apos;s trial expires that explains how to purchase your offering.</description>
+        <externalId>false</externalId>
+        <label>Partner Trial Expiring Soon</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>sfcma__Partner_License_Discrepancy__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Receive an email when a customer uses more seats than allowed by their license.</description>
+        <externalId>false</externalId>
+        <label>Partner License Discrepancy</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>sfcma__Partner_Payment_Declined__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Receive an email when a customer&apos;s credit card is declined.</description>
+        <externalId>false</externalId>
+        <label>Partner Payment Declined</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>sfcma__ScheduledJobId__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The Id of the scheduled apex job (CronTrigger) used for scheduled notification sending.</description>
+        <externalId>false</externalId>
+        <label>Scheduled Notifications Job Id</label>
+        <length>18</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Email Configuration</label>
+    <visibility>Public</visibility>
+</CustomObject>

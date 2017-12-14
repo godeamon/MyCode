@@ -1,0 +1,31 @@
+<apex:page controller="UnsubscribeEmailController" showHeader="false" sidebar="false" action="{!updateLeadOrContact}" title="Email Unsubscribe - Charket">
+    <style>
+        body {
+            margin: 0; 
+            padding: 0; 
+            height: 100%; 
+            width: 100%; 
+            overflow: hidden;
+            font-family: arial, tahoma, verdana, sans-serif;
+            font-size: 12px; 
+            background-color: #f4f4f4; 
+            text-align: left; 
+            line-height: 1.4em; 
+            color: #555555;
+        }
+    </style>
+    <apex:outputPanel layout="block">
+        <div style="padding-top: 70px; padding-bottom: 15px; width: 100%; max-width: 545px; margin: 0 auto">
+            <image src="{!URLFOR($Resource.charket_logo)}" style="margin:0 auto; max-width: 170px"></image>
+        </div>
+        <div style="width: 100%; max-width: 545px; margin: 0 auto; border: 1px solid #e0e0e0;
+                    box-shadow: 0px 0px 2px #dadada">
+            <div style="background-color: #f4f4f4; font-size: 18px; padding: 15px 20px;">
+                You are unsubscribed
+            </div>
+            <div style="background-color: #fff; padding: 20px; min-height: 60px">
+                You have been unsubscribed from Charket email. 
+            </div>
+        </div>
+    </apex:outputPanel>
+</apex:page>

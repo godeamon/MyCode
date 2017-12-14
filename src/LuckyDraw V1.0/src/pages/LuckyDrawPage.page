@@ -1,0 +1,532 @@
+<apex:page standardController="Campaign" extensions="LuckyDrawPageController" showHeader="false">
+  <html xmlns:v-bind="http://www.charket.com/" xmlns:v-on="http://www.charket.com/">
+    <head>
+      <script data-require="vue.js@*" data-semver="10.0.26" src="https://cdn.jsdelivr.net/vue/1.0.26/vue.min.js"></script>
+      <style>
+        /* Styles go here */
+        * {
+          box-sizing: border-box;
+        }
+        html {
+          height: 100%;
+        }
+        body {
+          padding: 0;
+          width: 100%;
+          height: 100%;
+
+          background: url({!URLFor($Resource.LuckyDraw, 'assets/confetti.png')}), repeating-linear-gradient(135deg, #ea3f3f, #ea3f3f 10px, #fd4545 10px, #fd4545 20px) fixed;/* determines size */
+        }
+        
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button{
+            -webkit-appearance: none !important;
+            margin: 0; 
+        }
+        input[type="number"] {
+          -moz-appearance: textfield;
+        }
+
+        #app {
+          position: relative;
+          margin: 0 auto;
+          width: 1024px;
+          height: 768px;
+        }
+
+        .header {
+          padding-top: 50px;
+          height: 160px;
+          text-align: center;
+        }
+
+        .content {
+          padding: 10px;
+          padding-bottom: 30px;
+          height: calc(100% - 160px);
+        }
+
+        /* followers */
+        .followers {
+          float: left;
+          margin: 0;
+          padding: 13px 20px;
+          width: calc(100% - 190px);
+          height: 100%;
+          display: inline-block;
+          list-style: none;
+
+          border-top: solid 2px #ca3737;
+          border-left: solid 2px #ca3737;
+          background-color: #832626;
+          box-shadow: inset 0 0 20px #671010;
+          border-radius: 8px;
+        }
+
+        .follower {
+          float: left;
+          margin: 5px;
+          border-radius: 5px;
+          text-align: center;
+          overflow: hidden;
+          background-color: #000;
+          background: linear-gradient(rgba(255,255,255,0.5), rgba(0,0,0,0.5));
+        }
+
+        .follower img {
+          width: 100%;
+          transition: opacity 200ms linear;
+        }
+
+        .max-70-followers .follower {
+          width: 67px;
+          height: 67px;
+          line-height: 67px;
+        }
+        .min-70-followers .follower {
+          width: 45px;
+          height: 45px;
+          line-height: 45px;
+        }
+        .min-140-followers .follower {
+          width: 38px;
+          height: 38px;
+          line-height: 38px;
+        }
+
+        .active {
+          border: 2px solid #ffc548;
+          box-shadow: 0 0 13px #ffdd63;
+        }
+        .active img {
+          opacity: 1;
+        }
+
+        .inactive {
+          border-width: 2px 0 0 2px;
+          border-color: rgba(255, 255, 255, 0.19);
+          box-shadow: 2px 2px 5px #5c251f;
+        }
+        .inactive img {
+          opacity: 0.5;
+        }
+
+        /* winners */
+        .winner-area {
+          float: right;
+          padding: 10px;
+          padding-bottom: 20px;
+          width: 170px;
+          height: 100%;
+          text-align: center;
+
+          border-top: solid 2px #ca3737;
+          border-left: solid 2px #ca3737;
+          background-color: #832626;
+          box-shadow: inset 0 0 20px #671010;
+          border-radius: 8px;
+        }
+
+        .winner-area .title {
+          margin: 0;
+          font-size: 28px;
+          color: #ffd241;
+        }
+
+        .winners {
+          padding: 0;
+          margin: 20px 0;
+          height: 410px;
+          width: 100%;
+          list-style: none;
+          text-align: center;
+          overflow-x: hidden;
+          overflow-y: auto;
+        }
+
+        .winner {
+          float: left;
+          margin-top: 10px;
+          margin-bottom: 10px;
+          margin-left: 0;
+          width: 100%;
+          text-align: center;
+          font-size: 22px;
+          color: #ffdf4b;
+        }
+
+        .winner .winner-img {
+          margin-left: 37px;
+          margin-bottom: 5px;
+          width: 76px;
+          height: 76px;
+          border-radius: 5px;
+          border: 2px solid #ffc548;
+          box-shadow: 0 0 13px #ffdd63;
+        }
+
+        .winner img {
+          width: 100%;
+          height: 100%;
+        }
+        .winner p {
+          margin: 0;
+          width: 100%;
+          word-break: break-word;
+        }
+
+        /* alert */
+        .alert-bg {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0,0,0,0.7);
+          overflow: auto;
+          transition: all 200ms linear;
+        }
+
+        .con-container {
+          margin: 10% auto;
+          padding-top: 130px;
+          width: 350px;
+          height: 470px;
+          background-repeat: no-repeat;
+          background-size: 350px 470px;
+          text-align: center;
+        }
+
+        .input-container {
+          background-image: url({!URLFor($Resource.LuckyDraw, 'assets/count-setting-bg.png')});
+        }
+        .input-container input {
+          margin-bottom: 70px;
+          width: 269px;
+          height: 190px;
+          background-color: #832726;
+          border-radius: 8px;
+          color: #ffdf4b;
+          font-size: 178px;
+          border: none;
+          text-align: center;
+        }
+
+        .lucky-member-container {
+          padding-top: 160px;
+          background-image: url({!URLFor($Resource.LuckyDraw, 'assets/get-gift-bg.png')});
+        }
+
+        .lucky-member-container .info-img {
+          margin: 0 auto;
+          width: 110px;
+          height: 110px;
+          border: 3px solid #ffc548;
+          box-shadow: 0 0 13px #ffdd63;
+          text-align: center;
+          border-radius: 6px;
+        }
+        .lucky-member-container img {
+          width: 100%;
+          height: 100%;
+        }
+        .lucky-member-container .info-name {
+          margin-top: 20px;
+          margin-bottom: 70px;
+          font-size: 28px;
+          color: #ffdf4b;
+        }
+
+        /* buttons */
+        a.button-default {
+          display: block;
+          height: 50px;
+          background-repeat: no-repeat;
+        }
+
+        a.start {
+          margin-left: 14px;
+          width: 120px;
+          background-image: url({!URLFor($Resource.LuckyDraw, 'assets/start-default.png')});
+          background-size: 120px 50px;
+        }
+        a.start-disabled {
+          margin-left: 14px;
+          width: 120px;
+          background-image: url({!URLFor($Resource.LuckyDraw, 'assets/start-clicked.png')});
+          background-size: 120px 50px;
+        }
+
+        a.big-btn-default {
+          margin-left: 40px;
+          width: 269px;
+          background-size: 269px 50px;
+        }
+
+        a.start-get {
+          background-image: url({!URLFor($Resource.LuckyDraw, 'assets/start-get-default.png')});
+        }
+        a.start-get-active {
+        background-image: url({!URLFor($Resource.LuckyDraw, 'assets/start-get-clicked.png')});
+        }
+
+        a.continue {
+          background-image: url({!URLFor($Resource.LuckyDraw, 'assets/continue-default.png')});
+        }
+        a.continue-active {
+          background-image: url({!URLFor($Resource.LuckyDraw, 'assets/continue-cilcked.png')});
+        }
+
+        /* transition */
+        .fade {
+          transition: all .2s ease-in-out;
+          opacity: 0;
+        }
+        .fade-in {
+          opacity: 1;
+        }
+
+        .fold {
+          transition: all .2s ease-in-out;
+        }
+        .fold-left {
+          transform: translateX(-200px) translateY(-100px) scale(0.15);  
+        }
+        .fold-in {
+          transform: scale(1, 1) translateX(0) translateY(0);
+        }
+        .fold-right {
+          transform: translateX(350px) translateY(-100px) scale(0.15);
+        }
+      </style>
+    </head>
+
+    <body>
+      <div id="app">
+        <div class="header">
+          <img src="{!URLFor($Resource.LuckyDraw, 'assets/title.png')}" alt="" />
+        </div>
+        <div class="content">
+          <ul class="followers" v-bind:class="{'max-70-followers': followers.length <= 70, 'min-70-followers': followers.length > 70 && followers.length <= 140, 'min-140-followers': followers.length > 140}">
+            <li class="follower" v-bind:class="{active: follower.selected, inactive: !follower.selected}" v-for="follower in followers">
+              <img v-bind:src="follower.Url" />
+            </li>
+          </ul>
+
+          <div class="winner-area">
+            <p class="title">获奖名单</p>
+            <ul class="winners" >
+              <li class="winner" v-for="winner in winners">
+                <div class="winner-img" v-show="winner">
+                  <img v-bind:src="winner.Url"/>
+                </div>
+                <p class="winner-name" v-text="winner.Name"></p>
+              </li>
+            </ul>
+            <a class="button-default" v-on:click="showQuantity" v-bind:class="{'start': enableStart, 'start-disabled': !enableStart}"></a>
+          </div>
+        </div>
+
+        <div class="alert-bg fade" v-show="showQuantityArea" v-bind:class="fadeTransition">
+          <div class="con-container input-container fold" v-bind:class="foldTransition">
+            <input type="number" v-model="maxQuantity" />
+            <a class="button-default big-btn-default" v-on:click="runLuckyDraw" v-bind:class="{'start-get': !disabledStartGet, 'start-get-active': disabledStartGet}"></a>
+          </div>
+        </div>
+
+        <div class="alert-bg fade" v-show="showWinner" v-bind:class="fadeTransition">
+          <div class="con-container lucky-member-container fold" v-bind:class="foldTransition">
+            <p class="info-img">
+              <img v-bind:src="currentWinner.Url"/><br/>
+            </p>
+            <p class="info-name">{{currentWinner.Name}}</p>
+            <a class="button-default big-btn-default" v-on:click="runLuckyDraw" v-bind:class="{'continue': !disabledContinue, 'continue-active': disabledContinue}"></a>
+          </div>
+        </div>
+      </div>
+      <script>
+        var app = new Vue({
+          el: '#app',
+          created(){
+            this.getMembers();
+          },
+          data: {
+            followers: [],
+            winners: [],
+            currentWinner: {},
+            enableStart: true,
+            showQuantityArea: false,
+            maxQuantity: 0,
+            showWinner: false,
+            disabledStartGet: true,
+            disabledContinue: false,
+            luckyDrawType: '{!$CurrentPage.parameters.type}',
+            fadeTransition: {
+              'fade-in': false
+            },
+            foldTransition: {
+              'fold-left': false,
+              'fold-in': false,
+              'fold-right': true
+            },
+            prizes: ['Lucky Draw - 3rd', 'Lucky Draw - 2nd', 'Lucky Draw - 1st']
+          },
+          watch: {
+            maxQuantity( currentValue ) {
+              if ( currentValue > 0 && currentValue < this.followers.length+1 ) {
+                this.disabledStartGet = false;
+              } else {
+                this.disabledStartGet = true;
+              }
+            }
+          },
+          methods: {
+            getMembers(){
+              var campaignId = '{!campaign.Id}';
+              var accountId = '{!$CurrentPage.parameters.accountId}';
+              Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.LuckyDrawPageController.getMembers}', campaignId, accountId, (result, event) => {
+                console.log(result);
+                this.followers = result.map((follower) => {
+                  follower.selected = false;
+                  return follower;
+                });
+              })
+            },
+            showQuantity() {
+              if (!this.maxQuantity) {
+                this.showQuantityArea = true;
+                setTimeout(() => {
+                  this.fadeTransition = {
+                    'fade-in': true,
+                  };
+                  this.foldTransition = {
+                    'fold-in': true,
+                    'fold-left': false,
+                    'fold-right': false
+                  };
+                }, 10);
+              }
+            },
+            runLuckyDraw () {
+              if ( !this.disabledContinue ) {
+                this.fadeTransition = {
+                  'fade-in': false,
+                };
+                this.foldTransition = {
+                  'fold-in': false,
+                  'fold-left': false,
+                  'fold-right': true
+                };
+                
+                setTimeout(() => {
+                  if (this.currentWinner.Id) {
+                    this.winners.unshift(this.currentWinner);
+                    this.showWinner = false;
+                    var status;
+                    if (this.luckyDrawType === 'coffee') {
+                      status = 'Lucky Draw - Coffee';
+                    } else {
+                      status = this.prizes.shift();
+                    }
+                    console.log(status);
+                    Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.LuckyDrawPageController.updateMemberStatus}', [this.currentWinner.Id], status, (result, event) => {
+                      console.log(this.followers);
+                    });
+                  } else {
+                    this.enableStart = false;
+                    this.showQuantityArea = false;
+                    if ( this.luckyDrawType != 'coffee' ) {
+                      this.maxQuantity = 3;
+                    }
+                  }
+                  if (this.winners.length < this.maxQuantity) {
+                    this.randomMembers();
+                  }  else {
+                    // this.updateMemberStatus();
+                  }
+                }, 200);
+              }
+            },
+            showWinnerInfo( ) {
+              this.foldTransition = {
+                'fold-in': false,
+                'fold-left': true,
+                'fold-right': false
+              };
+              setTimeout(() => {
+                this.fadeTransition = {
+                  'fade-in': true,
+                };
+                this.foldTransition = {
+                  'fold-in': true,
+                  'fold-left': false,
+                  'fold-right': false
+                };
+              }, 10);
+            
+              this.showWinner = true;
+              if ( this.winners.length === this.maxQuantity - 1 ) {
+                this.disabledContinue = true;
+                setTimeout(()=>{
+                  this.fadeTransition = {
+                    'fade-in': false,
+                  };
+                  this.foldTransition = {
+                    'fold-in': false,
+                    'fold-left': false,
+                    'fold-right': true
+                  };
+                  
+                  setTimeout(() => {
+                    if (this.currentWinner.Id) {
+                      this.winners.unshift(this.currentWinner);
+                      this.showWinner = false;
+                      var status;
+                      if (this.luckyDrawType === 'coffee') {
+                        status = 'Lucky Draw - Coffee';
+                      } else {
+                        status = this.prizes.shift();
+                      }
+                      Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.LuckyDrawPageController.updateMemberStatus}', [this.currentWinner.Id], status, (result, event) => {
+                        console.log(this.followers);
+                      });
+                    }
+                  }, 200);
+                }, 1000);
+              } else {
+                // this.disabledContinue = false;
+              }
+            },
+            randomMembers() {
+              let i = 0;
+              let lastRandomNum;
+              const handler = () => {
+                let randomNum = Math.floor(Math.random() * this.followers.length);
+                if ( randomNum === lastRandomNum ) {
+                  handler();
+                } else {
+                  if ( i > 0 && this.followers[lastRandomNum] ) {
+                    this.followers[lastRandomNum].selected = false;
+                  }
+                  this.followers[randomNum].selected = true;
+                  lastRandomNum = randomNum;
+                  i++;
+                  if ( i < 10 ) {
+                    setTimeout(handler, 100);
+                  } else {
+                    setTimeout(() => {
+                      const winner = this.followers.splice(randomNum, 1);
+                      this.currentWinner = winner[0];
+                      this.showWinnerInfo();
+                    }, 500);
+                  }
+                }
+              }
+              setTimeout(handler, 100);
+            }
+          }
+        })
+      </script>
+    </body>
+  </html>
+</apex:page>
