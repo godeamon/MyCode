@@ -1,0 +1,417 @@
+<apex:page controller="LuckyDrawController" action="{!validateSettings}" showHeader="false" id="page">
+  <html xmlns:v-bind="http://www.charket.com/" xmlns:v-on="http://www.charket.com/">
+  <head>
+    <style>
+      /* Styles go here */
+      .displayBG {
+        border: none;
+        width: 100%;
+        height: 100%;
+        display: block;
+        position: fixed;
+        text-align: center;
+      }
+      .loadingImg {
+        height: 20px;
+        width: 20px;
+        margin-top: 200px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        height: 100%;
+      }
+
+      body {
+        padding: 0;
+        width: 100%;
+        height: 100%;
+      }
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none !important;
+        margin: 0;
+      }
+      input[type="number"] {
+        -moz-appearance: textfield;
+      }
+      .theme1 .lucky-member-container {
+        padding-top: 160px;
+        background-image: url({!URLFor($Resource.LuckyDraw, 'assets/get-gift-bg.png')});
+      }
+      .theme1 a.start {
+        margin-left: 14px;
+        width: 120px;
+        background-image: url({!URLFor($Resource.LuckyDraw, 'assets/start-default.png')});
+        background-size: 120px 50px;
+      }
+      .theme1 a.start-disabled {
+        margin-left: 14px;
+        width: 120px;
+        background-image: url({!URLFor($Resource.LuckyDraw, 'assets/start-clicked.png')});
+        background-size: 120px 50px;
+      }
+      .theme1 a.start-get {
+        background-image: url({!URLFor($Resource.LuckyDraw, 'assets/start-get-default.png')});
+      }
+      .theme1 a.continue {
+        background-image: url({!URLFor($Resource.LuckyDraw, 'assets/continue-default.png')});
+      }
+      .theme1 a.finished {
+        background-image: url({!URLFor($Resource.LuckyDraw, 'assets/finish-default.png')});
+      }
+        .vfHelpText a            {position:relative;}
+        .vfHelpText a span       {display: none;}
+        .vfHelpText a:hover span {display: block;
+                                  position:absolute;
+                                  top:1.25em;
+                                  padding:2px 5px;
+                                  left:-15em; width:15em;
+                                  z-index:100;
+                                  border:1px solid orange;
+                                  background-color:#FEFDB9;
+                                  color:black;
+                                 }
+    </style>
+    <apex:stylesheet value="{!URLFOR($Resource.LuckyDraw, 'css/app.css')}"/>  
+    <script>
+      if (!Array.prototype.find) {
+        Object.defineProperty(Array.prototype, 'find', {
+          value: function(predicate) {
+          // 1. Let O be ? ToObject(this value).
+            if (this == null) {
+              throw new TypeError('"this" is null or not defined');
+            }
+
+            var o = Object(this);
+
+            // 2. Let len be ? ToLength(? Get(O, "length")).
+            var len = o.length >>> 0;
+
+            // 3. If IsCallable(predicate) is false, throw a TypeError exception.
+            if (typeof predicate !== 'function') {
+              throw new TypeError('predicate must be a function');
+            }
+
+            // 4. If thisArg was supplied, let T be thisArg; else let T be undefined.
+            var thisArg = arguments[1];
+
+            // 5. Let k be 0.
+            var k = 0;
+
+            // 6. Repeat, while k < len
+            while (k < len) {
+              // a. Let Pk be ! ToString(k).
+              // b. Let kValue be ? Get(O, Pk).
+              // c. Let testResult be ToBoolean(? Call(predicate, T, « kValue, k, O »)).
+              // d. If testResult is true, return kValue.
+              var kValue = o[k];
+              if (predicate.call(thisArg, kValue, k, o)) {
+                return kValue;
+              }
+              // e. Increase k by 1.
+              k++;
+            }
+
+            // 7. Return undefined.
+            return undefined;
+          }
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <apex:outputPanel id="testPanel">
+    <apex:outputPanel rendered="{!!HasSettings}" id="panel" >
+      <apex:form id="theform">
+        <apex:pageBlock mode="edit" id="thepageblock" title="抽奖设置">
+          <apex:pageBlockSection >
+            <apex:pageBlockSectionItem >
+              <apex:outputLabel value="抽奖总轮数" for="arrInputArea" />
+              <apex:outputPanel layout="block" styleClass="requiredInput">
+                <div class="requiredBlock"></div>
+                  <apex:inputText id="arrInputArea" value="{!RoundCount}" onkeyup="this.value=this.value.replace(/\D|^0/g,'')" styleClass="notBlank" onblur="initRounds();"/>
+                  <apex:actionFunction name="initPrizes" action="{!initPrizes}" reRender="thepageblock" status="loading"></apex:actionFunction>
+                  <apex:actionFunction name="initRounds" action="{!initRounds}" reRender="thepageblock" status="loading"></apex:actionFunction>
+              </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+              <apex:outputLabel value="允许参与抽奖的成员状态" />
+              <apex:repeat value="{!StatusShow}" var="status">
+                <apex:outputPanel >
+                  <apex:inputCheckbox value="{!status.IsAllow}" id="Status" />
+                  <apex:outputLabel value="{!status.Status}" style="text-align: right;font-size: 91%;font-weight: bold;color: #4a4a56;" for="Status"/>
+                </apex:outputPanel>
+              </apex:repeat>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+              <apex:outputLabel value="活动标题" for="subject" />
+              <apex:outputPanel layout="block" styleClass="requiredInput">
+                <div class="requiredBlock"></div>
+                <apex:inputText id="subject" value="{!CampaignName}" styleClass="notBlank" />
+              </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+              <apex:outputLabel value="启用标题滚动动画" for="enableTransition" />
+              <apex:outputPanel >
+                <apex:inputCheckbox id="enableTransition" value="{!enableTransition}" />
+              </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem HelpText="单人展示适合80人以上的。多人展示适合80人及以下。">
+              <apex:outputPanel >
+              <apex:outputLabel value="选择主题" for="theme" />
+                <span class="vfHelpText">
+                  <apex:outputLink value="javascript:return false;">
+                    <img src="/s.gif" alt="" class="helpOrb" />
+                      <span>单人展示适合80人以上的。<br/>多人展示适合80人及以下。</span>
+                    </apex:outputLink>
+                </span>
+              </apex:outputPanel>
+              <apex:selectList id="theme" value="{!theme}" size="1">
+                <apex:selectOption itemValue="theme2" itemLabel="单人展示"/>
+                <apex:selectOption itemValue="theme1" itemLabel="多人展示"/>
+              </apex:selectList>
+            </apex:pageBlockSectionItem>
+          </apex:pageBlockSection>
+          <apex:variable value="{!0}" var="i" id="indexVar" />
+          <apex:repeat value="{!Rounds}" var="round" id="repeat">
+            <apex:pageBlockSection title="第{!i+1}轮" >
+              <apex:pageBlockSectionItem >
+                <apex:outputLabel value="奖项数量" for="arrInputArea" />
+                <apex:outputPanel layout="block" styleClass="requiredInput">
+                  <div class="requiredBlock" style="display:{! If(i < CurrentRound-1, 'none' ,'inline')}"></div>
+                    <apex:inputText id="arrInputArea" style="display:{! If(i < CurrentRound-1, 'none' ,'inline')}" value="{!round.count}" onkeyup="this.value=this.value.replace(/\D|^0/g,'')" styleClass="notBlank" onblur="initPrizes();"/>
+                    <apex:outputText value="{!round.count}" rendered="{! if(i < CurrentRound-1, true ,false)}" style="text-align: right;font-size: 91%;font-weight: bold;color: #4a4a56;"/>
+                </apex:outputPanel>
+              </apex:pageBlockSectionItem>
+              <apex:pageBlockSectionItem rendered="{! if(i < CurrentRound-1, true ,false)}">
+                <apex:outputLabel value="状态"/>
+                <apex:outputLabel value="已完成" style="text-align: right;font-size: 91%;font-weight: bold;color: #4a4a56;"/>
+              </apex:pageBlockSectionItem>
+              <apex:pageBlockSectionItem rendered="{! !if(i < CurrentRound-1, true ,false)}">
+                <apex:outputLabel value="状态"/>
+                <apex:outputLabel value="未开始" style="text-align: right;font-size: 91%;font-weight: bold;color: #4a4a56;"/>
+              </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="2" id="pgbks">
+            <apex:variable value="{!0}" var="j" id="indexVar" />
+            <apex:pageBlockSectionItem />
+              <apex:repeat value="{!round.prizes}" var="item" id="itemrepeat">
+                <apex:pageBlockSectionItem >
+                  <apex:outputLabel value="奖项" for="arrInputArea" />
+                  <apex:outputPanel layout="block" styleClass="requiredInput">
+                  <apex:outputPanel rendered="{! if(i < CurrentRound-1, false ,true)}">
+                  <div class="requiredBlock"></div>
+                  </apex:outputPanel>
+                    <apex:inputText id="arrInputArea" value="{!item.status}" styleClass="notBlank" rendered="{! if(i < CurrentRound-1, false ,true)}"/>
+                    <apex:outputText value="{!item.status}" rendered="{! if(i < CurrentRound-1, true ,false)}" style="text-align: right;font-size: 91%;font-weight: bold;color: #4a4a56;">
+                    </apex:outputText>
+                  </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                  <apex:outputLabel value="中奖人数" for="arrInputArea" />
+                  <apex:outputPanel layout="block" styleClass="requiredInput">
+                    <apex:outputPanel rendered="{! if(i < CurrentRound-1, false ,true)}">
+                    <div class="requiredBlock"></div>
+                    </apex:outputPanel>
+                    <apex:inputText id="arrInputArea" value="{!item.count}" onkeyup="this.value=this.value.replace(/\D|^0/g,'')" styleClass="notBlank" rendered="{! if(i < CurrentRound-1, false ,true)}"/>
+                    <apex:outputText value="{!item.count}" rendered="{! if(i < CurrentRound-1, true ,false)}" style="text-align: right;font-size: 91%;font-weight: bold;color: #4a4a56;">
+                    </apex:outputText>
+                  </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                  <apex:outputLabel value="奖品" for="arrInputArea" />
+                  <apex:outputPanel layout="block" styleClass="requiredInput">
+                    <apex:outputPanel rendered="{! if(i < CurrentRound-1, false ,true)}">
+                    <div class="requiredBlock"></div>
+                    </apex:outputPanel>
+                    <apex:inputText id="arrInputArea" value="{!item.type}" styleClass="notBlank" rendered="{! if(i < CurrentRound-1, false ,true)}"/>
+                    <apex:outputText value="{!item.type}" rendered="{! if(i < CurrentRound-1, true ,false)}" style="text-align: right;font-size: 91%;font-weight: bold;color: #4a4a56;">
+                    </apex:outputText>
+                  </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="pgbksi">
+                <apex:outputLabel value="模板消息" for="inputtext" />
+                <apex:outputPanel layout="block" styleClass="requiredInput" id="outputpanel">
+                  <apex:inputhidden value="{!item.notificationTemplateId}" id="inputtext_lkid" />
+                  <apex:inputhidden value="{!item.notificationTemplateName}" id="inputtext_lkold" />
+                  <apex:inputText value="{!item.notificationTemplateName}" id="inputtext" rendered="{! if(i < CurrentRound-1, false ,true)}"/>
+                  <apex:outputText value="{!item.notificationTemplateName}" rendered="{! if(i < CurrentRound-1, true ,false)}" style="text-align: right;font-size: 91%;font-weight: bold;color: #4a4a56;">
+                  </apex:outputText>
+                  <a title="WeChat Notification Template (New Window)" tabindex="4" onclick="setLastMousePosition(event),openTemplatePopUp(this)"
+                    id="{!NotificationTemplatePrefix}Template_0_lkwgt{!i}{!j}">
+                    <img title="WeChat Notification Template(New Window)" onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';"
+                      onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';"
+                      onblur="this.className = 'lookupIcon';" class="lookupIcon" alt="Template Lookup (New Window)" src="/s.gif" style="display:{! If(i < CurrentRound-1, 'none' ,'inline')}"/>
+                  </a>
+                </apex:outputPanel>
+              </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem />
+                  <apex:variable var="j" value="{!j + 1}" />
+              </apex:repeat>
+              <apex:variable var="i" value="{!i + 1}" />
+            </apex:pageBlockSection>
+          </apex:repeat>
+          <apex:pageBlockButtons >
+            <apex:commandButton value="Save" action="{!saveSettings}" onclick="return validate()"/>
+            <apex:commandButton value="Reset" action="{!reSet}"/>
+          </apex:pageBlockButtons>
+          <apex:actionStatus id="loading" layout="block">
+            <apex:facet name="start">
+              <div class="overlayBackground displayBG">
+                <img src="/img/loading.gif" id="loading" class="loadingImg" />
+              </div>
+            </apex:facet>
+          </apex:actionStatus>
+        </apex:pageBlock>
+      </apex:form>
+      <script>
+        var templatenameid;
+        function openTemplatePopUp(field) {
+          console.log(field);
+          var anchortagid = field.id;
+          var index;
+          var subId;
+          var repeatId;
+          var testId;
+          if (anchortagid.length == 21) {
+            testId = anchortagid.substring(20, 21);
+            repeatId = anchortagid.substring(19, 20);
+            index = anchortagid.substring(12, 13);
+            subId = anchortagid.substring(0, 3);
+          } else {
+            testId = anchortagid.substring(17, 18);
+            repeatId = anchortagid.substring(16, 17);
+            index = anchortagid.substring(9, 10);
+            subId = '';
+          }
+          templatenameid = 'page:theform:thepageblock:repeat:' + repeatId + ':pgbks:itemrepeat:' + testId + ':pgbksi:inputtext';
+          if (field != null) {
+            field.href = "JavaScript:openLookup('/_ui/common/data/LookupPage?lkfm=editPage&lknm='+templatenameid+'&lktp=" +
+              subId + "',670,'1','&lksrch=' + escapeUTF(getElementByIdCS(templatenameid).value.substring(0, 80)))";
+          }
+        }
+      </script>
+      <script src="{!URLFOR($Resource.LuckyDraw, 'js/jquery-1.9.1.js')}"></script>
+      <script src="{!URLFOR($Resource.LuckyDraw, 'js/jquery-ui.js')}"></script>
+      <script>
+        if(typeof jQuery != 'undefined'){
+            $j =jQuery.noConflict();
+        }
+        function jq_addError(me,msg){
+            if(!($j(me).hasClass('error'))){
+                $j(me).addClass("error");
+                $j(me).parent().append("<div class='errorMsg'>" + msg + "</div>");
+            }
+            else{
+                $j(me).siblings('.errorMsg').remove();
+                $j(me).parent().append("<div class='errorMsg'>" + msg + "</div>");
+            }
+        }
+        
+        function jq_removeError(me){
+            if($j(me).hasClass('error')){
+                $j(me).removeClass("error");
+                $j(me).siblings('.errorMsg').remove();
+            }
+        }
+        
+        function validate(){
+            var b = true;
+            $j('.notBlank').each(function(){
+                if($j(this).val().length == 0){
+                    jq_addError($j(this),"<b></b>此项不能为空");
+                    b = false;
+                }
+                else{
+                    jq_removeError($j(this));
+                }
+            });
+            return b;
+        }
+      </script> 
+
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!HasSettings}">
+      <apex:form >
+        <apex:actionFunction name="editSettings" action="{!editSettings}" ></apex:actionFunction>
+      </apex:form>
+      <div id="app">
+      </div>
+      <style>
+        #app.theme1 {
+          width: 100%;
+          min-height: 100%;
+          background: url({!URLFor($Resource.LuckyDraw, 'assets/followers.png')}), repeating-linear-gradient(135deg, #ea3f3f,  #ea3f3f 10px, #fd4545 10px, #fd4545 20px) fixed;
+        }
+        #app.theme2 {
+          width: 100%;
+          min-height: 100%;
+          background: url({!URLFor($Resource.LuckyDraw, 'assets/scraps-paper.svg')}), #fff265 fixed;
+        }
+        .settings-icon {
+          opacity: 0;
+          position: absolute; 
+          top: 40px; 
+          right: 20px;"
+          width: 40px;
+          height: 40px;
+          transition: opacity 1s;
+        }
+        .settings-icon:hover {
+          opacity: 1;
+        }
+      </style>
+      <script>
+        var luckyDrawSettings = {!LuckyDrawSettings}
+        var campaignId = '{!campaignId}'
+        var accountId = '{!accountId}'
+        var logId = '{!logId}'
+        const getMembers = function () {
+          var self = this
+          Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.LuckyDrawController.getMembers}', campaignId,
+            accountId, luckyDrawSettings.drawStatus, function (result, event) {
+              if (result) {
+                self.followers = result.map(function (follower) {
+                  follower.selected = false
+                  return follower
+                })
+              } else {
+                console.error(result)
+              }
+            })
+        }
+        const updateMemberStatus = function (winnerIds, status) {
+          Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.LuckyDrawController.updateMemberStatus}', 
+            winnerIds, status, function (result, event) {
+              console.log(result);
+            });
+        }
+        
+        const sendNotification = function (winnerId, notificationTemplateId) {
+          Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.LuckyDrawController.sendNotification}', 
+            winnerId, notificationTemplateId, function (result, event) {
+              console.log(result);
+            });
+        }
+
+        const updateLogData = function (settings) {
+          console.log(logId);
+          console.log(JSON.stringify(settings));
+          Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.LuckyDrawController.updateLogData}', 
+            logId, settings, function (result, event) {
+              console.log(result);
+            });
+        }
+      </script>
+      <apex:includeScript value="{!URLFOR($Resource.LuckyDraw, 'js/manifest.js')}"/>
+      <apex:includeScript value="{!URLFOR($Resource.LuckyDraw, 'js/vendor.js')}"/>
+      <apex:includeScript value="{!URLFOR($Resource.LuckyDraw, 'js/app.js')}" loadOnReady="true"/>
+    </apex:outputPanel>
+  </apex:outputPanel>
+  </body>
+  </html>
+</apex:page>
