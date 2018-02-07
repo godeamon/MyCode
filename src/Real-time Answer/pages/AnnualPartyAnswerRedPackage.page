@@ -1,0 +1,683 @@
+<apex:page controller="AnnualPartyAnswerController" tabStyle="Charket__Survey__c" lightningStyleSheets="true" sidebar="false" showChat="false" showHeader="false">
+    <script src="{!URLFOR($Resource.cometd,'cometd/cometd.js')}"/>
+    <script src="{!URLFOR($Resource.cometd,'cometd/jquery-1.5.1.js')}"/>
+    <script src="{!URLFOR($Resource.cometd,'cometd/json2.js')}"/>
+    <script src="{!URLFOR($Resource.cometd,'cometd/jquery.cometd.js')}"/>
+    <apex:stylesheet value="//brick.a.ssl.fastly.net/Roboto:400"/>
+    <apex:slds />
+    <script>
+    var FirstQuestionId = '{!FirstQuestionId}';
+    var CurrentNum = '{!CurrentNum}';
+    var $step = 1;
+    var $loops = Math.round(100 / $step);
+    var $increment = 360 / $loops;
+    var $half = Math.round($loops / 2);
+    var $barColor = '#CCCC00';
+    var $backColor = 'gray';
+    //RedPackPicture
+    var endDate;
+    var followIds = new Array();
+
+    var totalAmount;
+    var wishing;
+    var sendAll = '{!SendAll}';
+    var compainId = '{!CampaignId}';
+    var accountId = '{!AccountId}';
+    var colorList = ["#815cb4","#39acdd","#26a48b","#df5f3b"];
+    var myObject = {};
+    var tempUserAnswer;
+    var rightAnswer;
+    var correctNum = '{!CurrentCorrectNum}';
+    var questionsCount = '{!QuestionsCount}';
+    var finalEndTime;
+    var finalAnswerTime;
+
+        $(function()
+        {
+            console.log('accountId' + accountId);
+            if(CurrentNum != 0)
+            {
+                clock.start();
+                endDate = new Date();
+                console.log('begintime:' + endDate);
+                finalEndTime = endDate.getTime()/1000 + endDate.getTimezoneOffset()*60 + 11;
+            }
+
+            $.cometd.init({
+                url: window.location.protocol+'//'+window.location.hostname+'/cometd/41.0/',
+                requestHeaders: { Authorization: 'OAuth {!$Api.Session_ID}'}
+            });
+
+            $.cometd.subscribe('/event/RealTimeAnswer__e', function(message)
+            {
+                var userAnswer = message.data.payload.UserSentMessage__c;
+                console.log('userAnswer: ' + userAnswer);
+                var answerDate = new Date(Date.parse(message.data.payload.WeChatMessageCreatedDate__c));
+                finalAnswerTime = answerDate.getTime()/1000;
+                console.log("finalAnswerTime : " + finalAnswerTime);
+                console.log('finalEndTime : ' + finalEndTime);
+
+                if(finalEndTime < finalAnswerTime)
+                {
+                    var emptyList = new Array();
+                    Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.AnnualPartyAnswerController.sendTimeoutAndWinMessage}',message.data.payload.WeChatFollowerId__c,'',emptyList,
+                    function(result, event)
+                    {
+                        console.log("!!!@@@###:::  " + 'nnnu');
+                    });
+                }
+                else
+                {
+                    //不包含a,说明回答正确
+                    //记录每个问题对应的人数
+                    if(userAnswer.indexOf("a") == -1)
+                    {
+                        followIds.push(message.data.payload.WeChatFollowerId__c);
+                        console.log('userAnswer if: ' + userAnswer);
+                        tempUserAnswer = userAnswer;
+                    }
+                    else
+                    {   
+                        console.log('userAnswer else: ' + userAnswer);
+                        tempUserAnswer = userAnswer.substring(0, 1);
+                        console.log('tempUserAnswer : ' + tempUserAnswer);
+                    }
+
+                    if(myObject["a" + tempUserAnswer] != null)
+                    {
+                        myObject["a" + tempUserAnswer] += 1;
+                    }
+                    else
+                    {
+                        myObject["a" + tempUserAnswer] = 1;
+                    }
+                }
+            });
+        });
+        clock =
+        {
+            interval:null,
+            start:function(t)
+            {
+                var pie = 0;
+                var num = 0;
+                var sec = 10;
+                var lop = sec;
+                
+                clock.interval = setInterval(function()
+                {
+                    sec = sec - 1;
+                    pie = pie + (100/(lop));
+                    if(pie >= 101)
+                    {
+                        pie = 1;
+                    }
+                    num = (sec/60).toFixed(2).slice(0,-3);
+                    if(num == 0)
+                    {
+                        $('.count').removeClass('min').addClass('sec').text(sec);
+                    }
+                    $i = (pie.toFixed(2).slice(0,-3))-1;
+                    if($i < $half)
+                    {
+                        $nextdeg = (90 + ( $increment * $i ))+'deg';
+                        $('.clock').css({'background-image':'linear-gradient(90deg,'+$backColor+' 50%,transparent 50%,transparent),linear-gradient('+$nextdeg+','+$barColor+' 50%,'+$backColor+' 50%,'+$backColor+')'});
+                    }
+                    else
+                    {
+                        $nextdeg = (-90 + ( $increment * ( $i - $half ) ))+'deg';
+                        $('.clock').css({'background-image':'linear-gradient('+$nextdeg+','+$barColor+' 50%,transparent 50%,transparent),linear-gradient(270deg,'+$barColor+' 50%,'+$backColor+' 50%,'+$backColor+')'});
+                    }
+                    if(sec == 0)
+                    {   
+                        $("#answerEnd").show();
+                        clearInterval(clock.interval);
+                        $('.clock').css('background', '#CCCC00');
+                        console.log('correctNum : ' + correctNum);
+                        var colorEms = document.getElementsByTagName('em');
+                        $(colorEms[correctNum -1]).css("background", '#26a48b');
+                        $(".showPeople").show();
+                    }
+                },1000);
+            }
+        }
+
+        function beginAnswer()
+        {
+            endDate = new Date();
+            console.log('begintime:' + endDate);
+            finalEndTime = endDate.getTime()/1000 + endDate.getTimezoneOffset()*60 + 11;
+
+            document.getElementById('qrCode').style.display = 'none';
+            if(CurrentNum == 0)
+            {
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.AnnualPartyAnswerController.updateCurrentQuestionStatus}',FirstQuestionId,
+                    function(result, event) {
+                    console.log("!!!@@@###:::"+result);
+                });
+            }
+            clock.start();
+        }
+
+        function showRedPack()
+        {
+            document.getElementById('redPack').style.display = 'block';
+        }
+
+        function sendRedPack()
+        {
+            wishing = document.getElementById('inputValue').value;
+            totalAmount = document.getElementById('totalMoney').value;
+            sendAll = $("#myCheckBox").attr("checked");
+            Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.AnnualPartyAnswerController.sendWeChatRedPack}',followIds,totalAmount,wishing,sendAll,compainId,accountId,
+                    function(result, event) {
+                    console.log("!!!@@@###:::" + result);
+            });
+            document.getElementById('redPack').style.display = 'none';
+        }
+
+        function showAnswers()
+        {
+            document.getElementById('answerEnd').style.display = 'none';
+            if(CurrentNum == (questionsCount - 1))
+            {
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.AnnualPartyAnswerController.sendTimeoutAndWinMessage}','','a', followIds,
+                    function(result, event)
+                    {
+                        console.log("!!!@@@###:::  " + 'nnnu');
+                    });
+            }
+            var array = new Array();
+
+            for(var obj in myObject)
+            {
+                array.push(obj);
+            }
+            for(var i = 0; i < array.length; i ++ )
+            {
+                var temp = array[i];
+                console.log('temp : ' + temp);
+                console.log('myObject[temp] : ' + myObject[temp]);
+                $(".rate" + array[i]).text(myObject[temp] + '人');
+            }
+        }
+    </script>
+    <style>
+        .slds-scope .slds-button__icon
+        {
+            width: 4rem;
+            height: 3rem;
+            fill: currentColor;
+        }
+
+        .change
+        {
+            width:100%
+        }
+
+        .oneRow
+        {
+        display:inline-block;
+        }
+
+        .slds-scope a
+        {
+        text-decoration: none;
+        transition: color .1s linear;
+        }
+
+        .view-image-content
+        {
+            padding: 48px;
+            height: calc(100% - 60px);
+        }
+
+        .view-image-content img
+        {
+            display: block;
+            max-width: 116%;
+            max-height: 93%;
+            margin: 0 auto;
+            position: relative;
+            top: 41%;
+            transform: translateY(-50%);
+        }
+
+        .base
+        {
+            border-radius: 6px;
+            line-height: 29px;
+            width: 97%;
+            margin-bottom: 5%;
+            background: #425262;
+        }
+
+        .voteresult
+        {
+            border-radius: 27px;
+            margin: 2%;
+            margin-left: 15%;
+            width: 100%;
+            height: 106px;
+            background-color: #E8E8E8;
+        }
+
+        .style3
+        {
+            display: block;
+            float: left;
+            height: 35px;
+            border-radius: 27px;
+        }
+
+        .ease
+        {
+            transition: width 3s ease;
+        }
+
+        .slds-scope .slds-spinner
+        {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%,-50%) rotate(90deg);
+            background-color:blue;
+        }
+
+        .slds-scope .slds-spinner:after, .slds-scope .slds-spinner:before, .slds-scope .slds-spinner__dot-a:after, .slds-scope .slds-spinner__dot-a:before, .slds-scope .slds-spinner__dot-b:after, .slds-scope .slds-spinner__dot-b:before 
+        {
+            background: rgb(0, 112, 210);
+        }
+
+        .font-style
+        {
+            color: black;
+            font-weight: 300;
+            font-size: 2rem;
+            line-height: 1;
+        }
+
+        .slds-scope .slds-icon
+        {
+            fill: rgb(255, 183, 93);
+        }
+
+        .displayBG
+        {   
+            width: 100%;
+            height: 100%;
+            display: block;
+            position: fixed;
+            background-color:#2c3e50;
+        }
+
+        .slds-scope .slds-spinner 
+        {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%) rotate(90deg);
+            background-color:blue;
+        }
+
+        .slds-scope .slds-spinner:after, .slds-scope .slds-spinner:before, .slds-scope .slds-spinner__dot-a:after, .slds-scope .slds-spinner__dot-a:before, .slds-scope .slds-spinner__dot-b:after, .slds-scope .slds-spinner__dot-b:before 
+        {
+            background: rgb(0, 112, 210);
+        }
+
+        .font-style
+        {
+            color: black;
+            font-weight: 500;
+            font-size: 2rem;
+            text-align: left;
+            line-height: 1.5;
+            white-space: nowrap;
+            padding-bottom: 1rem;
+        }
+
+        .slds-scope .slds-icon
+        {
+            fill: rgb(255, 183, 93);
+        }
+
+        *,:after,:before
+        {
+            box-sizing:border-box
+        }
+        .pull-right
+        {
+            float:right
+        }
+
+        .clearfix:after,.clearfix:before
+        {
+            content:'';
+            display:table
+        }
+
+        .clearfix:after
+        {
+            clear:both;
+            display:block
+        }
+
+        .clock:before,
+        .count:after
+        {
+            content:'';
+            position:absolute;
+        }
+
+        .clock
+        {
+            top:10%;
+            right: 50%;
+            left: 50%;
+            width:170px;
+            height:170px;
+            border-radius:60%;
+            position:absolute;
+            margin-top: -4%;
+            margin-left:-8%;
+            background-color:white;
+        }
+
+        .clock:before
+        {
+            width: 146px;
+            height: 146px;
+            margin-top: 7%;
+            margin-left: 7%;
+            border-radius: inherit;
+            background-color: white;
+        }
+        .count
+        {
+            color: black;
+            font-size: 90px;
+            font-weight: 800;
+            line-height: 56px;
+            position: absolute;
+            text-align: inherit;
+            padding-left: 36%;
+            padding-top: 34%;
+        }
+
+        .count:after
+        {
+            width:100%;
+            display:block;
+            font-size:18px;
+            font-weight:300;
+            line-height:18px;
+            text-align:center;
+            position:relative;
+        }
+       
+        .action
+        {
+            margin:auto;
+            max-width:200px;
+        }
+        .action .input
+        {
+            margin-top:30px;
+            position:relative;
+        }
+        .action
+        {
+            width:100%;
+            border:none;
+            padding:12px;
+            border-radius:60px;
+        }
+        .action
+        {
+            top:0;
+            right:0;
+            color:yellow;
+            border:none;
+            border:none;
+            padding:12px;
+            position:absolute;
+            border-radius:60px;
+            background-color:yellow;
+            text-transform:uppercase;
+        }
+
+        .tbl
+        {
+            display:table;
+            width:100%
+        }
+
+        .tbl .col
+        {
+            display:table-cell
+        }
+
+        .round-button
+        {
+            width:20px;
+        }
+
+        .round-button-circle
+         {
+            width: 100%;
+            height:0;
+            padding-bottom: 100%;
+            border-radius: 50%;
+            overflow:hidden;
+            background: #4679BD; 
+            box-shadow: 0 0 3px gray;
+        }
+
+        .round-button-circle:hover
+        {
+            background:#30588e;
+        }
+
+        .round-button a {
+        width:100%;
+        padding-top:50%;
+        padding-bottom:50%;
+        line-height:1em;
+        margin-top:-0.5em;
+        text-align:center;
+        color:#e2eaf3;
+        font-family:Verdana;
+        font-size:1.2em;
+        font-weight:bold;
+        text-decoration:none;
+        }
+
+        .buuu
+        {
+            width: 200px;
+            padding: 8px;
+            background-color: #428bca;
+            border-color: #357ebd;
+            color: #fff;
+            -moz-border-radius: 10px;
+            -khtml-border-radius: 10px;
+            text-align: center;
+            vertical-align: middle;
+            font-weight: 900;
+            font-size: 218%;
+            border: solid 10px #4d4e53;
+            border-radius: 40px 40px 40px 40px;
+        }
+
+        .send-redpack {
+            opacity: 0;
+        }
+
+        .send-redpack:hover {
+            opacity: initial;
+            cursor: pointer;
+        }
+
+        input[type=checkbox]
+        {
+            zoom: 2.0;
+        }
+
+    </style>
+    
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+        <apex:includeScript value="{!$Resource.JqueryFile}"/>
+        <body style="background-color:white;">
+
+            <div class="view-image-content displayBG" id="qrCode" style="z-index: 9000;transition-duration: .4s;width: 100%;height: 100%;position: fixed;top: 0;right: 0; left: 0;background-color:gainsboro;display: {!if(CurrentNum != 0, 'none', 'block')}">
+                <div style="padding-top: 20%; padding-left: -5%; margin-bottom: -1%; margin-left: 9%; margin-right: 10%;">
+                    <apex:image id="theImageStart" value="{!$Resource.MeginfoStart}" width="120%" height="120%"/>
+                </div>
+                <div style="padding-left: 40%;padding-top: 1%;cursor:pointer">
+                    <div class='buuu' onclick="beginAnswer();">
+                        开&nbsp;始
+                    </div>
+                </div>
+            </div>
+
+            <div class="overlayBackground displayBG" id="Loading" style="display:none;">
+                <div class="demo-only" >
+                    <div role="status" class="slds-spinner slds-spinner_medium">
+                        <span class="slds-assistive-text" >Loading</span>
+                        <div class="slds-spinner__dot-a">
+                        </div>
+                        <div class="slds-spinner__dot-b">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 答题结束遮罩层-->
+            <div class="view-image-content displayBG" id="answerEnd" style="z-index: 9000;transition-duration: .4s;width: 100%;height: 100%;position: fixed;top: 0;right: 0; left: 0;background-color:#425262;padding-left: 38%;padding-right: 13%;display: none;">
+                <div style="position: absolute;width: 100px;height: 100px;left: 54%;top: 40%;">
+                    <div>
+                        <h1 style="font-size: 159px; position: fixed; left: 22%; top: 13%; color: wheat;">计时结束</h1>
+                    </div>
+                    <!--查看结果-->
+                    <div style="padding-left: 5%;padding-top: 114%;" class="sendRe">
+                        <div class="buuu" id="showAns" onclick="showAnswers();" style="margin-left: -138%;margin-top: 13%;">
+                            查看结果
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--红包遮罩层-->
+            <div class="" id="redPack" style="z-index: 9000;transition-duration: .4s;width: 100%;height: 100%;position: fixed;top: 0;right: 0; left: 0;background-color:rgba(52, 52, 52, 0.4);padding-left: 38%;padding-right: 13%;display: none;">
+                <div style="padding-top: 50%;margin-left: -69%;">
+                    <apex:image id="theImageRedPack" value="{!$Resource.RedPackPicture}" width="120%" height="120%" style="padding-right: 7%;margin-top: -30%;">
+                    </apex:image>
+                </div>
+                <div style="position: absolute; width: 100px; height: 100px; left: 49%; top: 38%;">
+                    <div>
+                        <h1 style="font-size: 62px; position: fixed; left: 32%; top: 36%; color: wheat;">
+                            金额:&nbsp;
+                        </h1>
+                        <input type="text" style="height: 46px; padding: 27px 85px; font-size: 41px; width: 250px;" maxlength="27" size="35" value="" id="totalMoney" name="Validate"/>
+                    </div>
+                    <div>
+                        <h1 style="font-size: 62px;position: fixed;left: 32%;top: 51%;color: wheat;">祝福语:&nbsp;</h1>
+                        <input type="text" style="height: 60px;padding: 77px 54px; font-size: 28px; width: 339px;margin-top: 139%; margin-left: -88%;" value="恭喜发财大吉大利" maxlength="27" size="35" id="inputValue" name="Validate"/> 
+                    </div>
+                    <div onclick="sendRedPack();" class="buuu" style="background-color: #f2cf5b; padding-top: 8%;margin-left: 66%; margin-top: 24%; rgin-left: 61%; border: solid 10px wheat; cursor: pointer;">
+                        发&nbsp;送
+                    </div>
+                    <div>
+                        <h1 style="font-size: 26px; position: fixed; left: 31%; top: 90%; color: wheat;">
+                            发放给所有人:&nbsp;
+                        </h1>
+                        <input id="myCheckBox" type="checkbox" style="margin-top: -50%;margin-left: -10%;" value="sendAll"/>
+                    </div>
+                </div>
+            </div>
+
+            <!--开始按钮-->
+            <div>
+                <span style="font-size:68px;color:white;" class="font-style colorSpanFont">
+                    <div class="clock-wrap">
+                        <div class="clock pro-0">
+                            <span class="count">开始</span>
+                        </div>
+                    </div>
+                </span>
+            </div>
+
+            <!--发放红包按钮-->
+            <div style="padding-left: 78%;padding-top: 4%;" class="sendRe">
+                <div class="buuu send-redpack" style="background-color: red;" onclick="showRedPack();">
+                    发放红包
+                </div>
+            </div>
+            
+            <div style="padding-top: 10%;padding-left: 11%;">
+                <span style="font-size:59px;color:black;">
+                    第{!CurrentNum + 1}题. 
+                </span>
+                <span style="font-size:59px;color:black;">
+                    {!CurrentQuestion.Charket__Question__c}
+                </span>
+            </div>
+
+            <div style="padding-top: 1%;">
+                <table class="test">
+                    <apex:variable value="{!1}" var="i" id="indexVar"/>
+                    <apex:repeat value="{!CurrentQuestion.CharKet__SurveyAnswers__r}" var="answer">
+                        <tr >
+                            <td style="padding-right: 26%;padding-left: 4%;">
+                                <div class="voteresult">
+                                    <em id="span1" class="style3 resulta{!i} colorEm ease" style="height: 99%; width: 100%;">
+                                        <span style="font-size:56px;" class="font-style colorSpanFont">
+                                            {!i}.&nbsp;{!answer.Charket__Choice__c}
+                                        </span>
+                                    </em>
+                                </div>
+                            </td>
+                            <td>
+                                <span style="font-size:56px;" class="ratea{!i} font-style colorSpanFont">
+                                    <h1 class="showPeople" style="display: none;">0&nbsp;人</h1>
+                                </span>
+                            </td>
+                        </tr>
+                        <apex:variable var="i" value="{!i + 1}"/>
+                    </apex:repeat>
+                </table>
+            </div>
+
+            <div style="position:fixed; bottom:0; right:0;">
+                <apex:outputPanel rendered="{!!IsLastQuestion}" styleClass="oneRow">
+                    <span>
+                        <a onclick="doNext();">
+                            <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                                <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#chevronright')}"></use>
+                            </svg>
+                        </a>
+                    </span>
+                </apex:outputPanel>
+            </div>
+
+            <div style="position:fixed; bottom:0; right:0;">
+                <apex:outputPanel rendered="{!IsLastQuestion}" styleClass="oneRow">
+                    <span>
+                        <div style="color:gray;">
+                            <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                                <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#chevronright')}"></use>
+                            </svg>
+                        </div>
+                    </span>
+                </apex:outputPanel>
+            </div>
+        </body>
+    </html>
+    <apex:form id="form">
+        <apex:actionFunction name="doNext" action="{!next}"></apex:actionFunction>
+    </apex:form>
+</apex:page>

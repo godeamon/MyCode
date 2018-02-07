@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>AnnualPartyAnswerController</members>
+        <members>AnnualPartyAnswerControllerTest</members>
+        <members>AnnualPartyAnswerHandler</members>
+        <members>AnnualPartyAnswerHandlerTest</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>AnnualPartyAnswerRedPackage</members>
+        <name>ApexPage</name>
+    </types>
+    <types>
+        <members>Charket__SurveyQuestion__c.CorrectAnswer__c</members>
+        <members>Charket__SurveyQuestion__c.ShowStatus__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>RealTimeAnswer__e</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>MeginfoStart</members>
+        <members>MeginfoTenYears</members>
+        <members>RedPackPicture</members>
+        <name>StaticResource</name>
+    </types>
+    <types>
+        <members>Charket__WeChatQRCode__c.Real_time_Answer</members>
+        <name>WebLink</name>
+    </types>
+    <version>40.0</version>
+</Package>
