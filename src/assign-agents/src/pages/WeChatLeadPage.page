@@ -1,0 +1,145 @@
+<apex:page id="page" showHeader="false" cache="true" docType="html-5.0" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" controller="WeChatLeadController">
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0"/>
+        <title>Try Charket</title>
+        <apex:stylesheet value="https://asset3.charket.meginfo.com.cn/styles/vendor/weui.min.css"/>
+        
+        <style>
+            body{
+                background-color: #efeff4;
+            }
+            .weui_label{
+                width: 6em;
+            }
+            .weui_select{
+                padding-left: 0;
+            }
+        </style>
+        
+        <script>
+            function showLoadingToast()
+            {
+                document.getElementById('loadingToast').style.display = 'block';
+            }
+            
+            function hideLoadingToast()
+            {
+                document.getElementById('loadingToast').style.display = 'none';
+            }
+            
+            function saveInfo()
+            {
+                if(validate())
+                {
+                    save();
+                    showLoadingToast();
+                }
+            }
+            
+            function validate()
+            {
+                var first = document.getElementById('page:form:first').value.trim()
+                var last = document.getElementById('page:form:last').value.trim()
+                var email = document.getElementById('page:form:email').value.trim()
+                var company = document.getElementById('page:form:company').value.trim();
+                
+                if(first && last && email && company)
+                {
+                    document.getElementById('errorMessage').style.display = 'none';
+                    return true;
+                }
+                document.getElementById('errorMessage').style.display = 'block';
+                return false;
+            }
+        </script>
+    </head>
+    
+    <body>
+    <apex:form id="form">
+        <apex:actionFunction name="save" action="{!save}" reRender="form" oncomplete="hideLoadingToast();"/>
+        
+        <apex:outputPanel layout="block" rendered="{!!isSaved}">
+            <div class="weui_cells_title">Try Charket</div>
+            <div class="weui_cells weui_cells_form">
+                <div class="weui_cell">
+                    <div class="weui_cell_hd">
+                        <label class="weui_label">First Name</label>
+                    </div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <apex:inputText styleClass="weui_input" value="{!firstName}" id="first"/>
+                    </div>
+                </div>
+                <div class="weui_cell">
+                    <div class="weui_cell_hd">
+                        <label class="weui_label">Last Name</label>
+                    </div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <apex:inputText styleClass="weui_input" value="{!lastName}" id="last"/>
+                    </div>
+                </div>
+                <div class="weui_cell">
+                    <div class="weui_cell_hd">
+                        <label class="weui_label">Company</label>
+                    </div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <apex:inputText styleClass="weui_input" value="{!company}" id="company"/>
+                    </div>
+                </div>
+                <div class="weui_cell">
+                    <div class="weui_cell_hd">
+                        <label class="weui_label">Email</label>
+                    </div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <apex:input styleClass="weui_input" value="{!email}" id="email" type="email"/>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="weui_cells_tips" style="color:#e64340; display:none;" id="errorMessage">Please enter the value</div>
+            <apex:outputPanel layout="block" styleClass="weui_cells_tips" style="color:#e64340;" rendered="{!!ISBLANK(errorMessage)}">
+                {!errorMessage}
+            </apex:outputPanel>
+            
+            <div class="weui_btn_area">
+                <a class="weui_btn weui_btn_primary" href="javascript:saveInfo()">Submit</a>
+            </div>
+            
+            <div id="loadingToast" class="weui_loading_toast" style="display: none;">
+            <div class="weui_mask_transparent"></div>
+            <div class="weui_toast">
+                <div class="weui_loading">
+                    <div class="weui_loading_leaf weui_loading_leaf_0"></div>
+                    <div class="weui_loading_leaf weui_loading_leaf_1"></div>
+                    <div class="weui_loading_leaf weui_loading_leaf_2"></div>
+                    <div class="weui_loading_leaf weui_loading_leaf_3"></div>
+                    <div class="weui_loading_leaf weui_loading_leaf_4"></div>
+                    <div class="weui_loading_leaf weui_loading_leaf_5"></div>
+                    <div class="weui_loading_leaf weui_loading_leaf_6"></div>
+                    <div class="weui_loading_leaf weui_loading_leaf_7"></div>
+                    <div class="weui_loading_leaf weui_loading_leaf_8"></div>
+                    <div class="weui_loading_leaf weui_loading_leaf_9"></div>
+                    <div class="weui_loading_leaf weui_loading_leaf_10"></div>
+                    <div class="weui_loading_leaf weui_loading_leaf_11"></div>
+                </div>
+                <p class="weui_toast_content">Saving</p>
+            </div>
+            </div>
+        </apex:outputPanel>
+        
+        <apex:outputPanel layout="block" rendered="{!isSaved}">
+            <div class="container" id="container"><div class="msg">
+            <div class="weui_msg">
+                <div class="weui_icon_area"><i class="weui_icon_success weui_icon_msg"></i></div>
+                <div class="weui_text_area">
+                    <h2 class="weui_msg_title">Request submitted! We will reach out to you shortly.</h2>
+                </div>
+            </div>
+            </div></div>
+        </apex:outputPanel>
+    
+    </apex:form>
+    </body>
+</html>
+</apex:page>

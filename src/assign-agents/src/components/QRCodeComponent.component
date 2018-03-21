@@ -1,0 +1,4 @@
+<apex:component controller="QRCodeComponentController" access="global">
+    <apex:attribute type="Id" name="conId" assignTo="{!ContactId}" description="The Contact for QRCode."/>
+     <apex:image id="QRCode" value="{!QRCodeUrl}" height="190" width="190" style="padding-bottom: 30px;padding-left:0px" />
+</apex:component>
