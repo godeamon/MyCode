@@ -1,0 +1,472 @@
+<apex:page controller="RealTimeVoteController" tabStyle="Charket__Survey__c" lightningStyleSheets="true"  sidebar="false" showChat="false" showHeader="false">
+    <script src="{!URLFOR($Resource.cometd,'cometd/cometd.js')}"/>
+    <script src="{!URLFOR($Resource.cometd,'cometd/jquery-1.5.1.js')}"/>
+    <script src="{!URLFOR($Resource.cometd,'cometd/json2.js')}"/>
+    <script src="{!URLFOR($Resource.cometd,'cometd/jquery.cometd.js')}"/>
+    <apex:slds />
+    <script>
+    var CurrentQRCodeId = '{!QRCodeId}';
+    var CurrentNum = '{!CurrentNum}';
+    var QuestionsCount = '{!QuestionsCount}';
+    var CurrentAnswerText = '{!CurrentAnswerText}';
+    var CurrentQuestionType = '{!CurrentQuestionType}';
+    var SurveyId = '{!SurveyId}';
+    var Index = '{!CurrentAnswersCount}';
+    var Sum = 0;
+    var answersRates = '{!answersRates}';
+    var colorList = ["#815cb4","#39acdd","#26a48b","#df5f3b"];
+    var myObject = {};
+    var CurrentQuestion = '{!CurrentQuestionText}';
+    
+    $(document).ready(function()
+    {
+        var colorEms = document.getElementsByTagName('em');
+        var colorSpans = document.getElementsByClassName('colorSpan');
+        var colorSpanFonts = document.getElementsByClassName('colorSpanFont');
+
+        for(var i = 0; i< colorEms.length; i++)
+        {
+            if(i < 4)
+            {
+                $(colorEms[i]).css("background", colorList[i]);
+                $(colorSpans[i]).css("color", colorList[i]);
+                $(colorSpanFonts[i]).css("color", colorList[i]);
+            }
+            else
+            {
+                var showColor = i%4;
+                $(colorEms[i]).css("background", colorList[showColor]);
+                $(colorSpans[i]).css("color", colorList[showColor]);
+                $(colorSpanFonts[i]).css("color", colorList[showColor]);
+            }
+        }
+        
+        if(answersRates != null && answersRates != '')
+        { 
+            console.log('@@@answersRates' + answersRates);
+            var answers =  JSON.parse(answersRates);
+            var arr = [];
+
+            for(var event in answers)
+            {
+                var dataCopy = answers[event];
+                arr.push(dataCopy);
+            }
+
+            console.log('array : ' + arr);
+            for(var i = 0; i < arr.length; i ++)
+            {
+                console.log('i' + arr[i]);
+                $(".ratea" + (i+1)).text(arr[i ]*100  + '%' );
+                $(".resulta" + (i + 1)).css("width", arr[i ]*100 + '%');
+            }
+        }
+        
+        $.cometd.init({
+            url: window.location.protocol+'//'+window.location.hostname+'/cometd/41.0/',
+            requestHeaders: { Authorization: 'OAuth {!$Api.Session_ID}'}
+        });
+
+        $.cometd.subscribe('/event/LivePollingEvent__e', function(message) {
+            
+            if(message.data.payload.WeChatQRCodeId__c == CurrentQRCodeId)
+            {
+                console.log("message.data.payload.WeChatMessage__c:  " + message.data.payload.WeChatMessage__c);
+                var strs = new Array();
+                strs = message.data.payload.WeChatMessage__c.split('');
+                for(var i = 0; i < strs.length; i ++)
+                {
+                    if(strs[i] != null && strs[i] != '')
+                    {
+                        Sum += 1;
+                        if(myObject["a" + strs[i]] != null)
+                        {
+                            myObject["a" + strs[i]] +=  1;
+                        }
+                        else
+                        {
+                            console.log('map.get(strs[i]) == null ====' + strs[i]);
+                            myObject["a" + strs[i]] = 1;
+                        }
+                    }
+                }
+                var array = new Array();
+                for(var obj in myObject)
+                {
+                    array.push(obj);
+                }
+                var showPerson = '{!IsShowPersonNum}';
+                var a = 0; 
+                for(var i = 0; i < array.length; i ++ )
+                {
+                    var temp = array[i];
+                    if(showPerson == '0')
+                    {
+                        $(".rate" + array[i]).text( (((myObject[temp])/Sum) * 100).toFixed(2) + '%' );
+                    }
+                    else
+                    {
+                        $(".rate" + array[i]).text( (((myObject[temp])/Sum) * 100).toFixed(2) + '%' + '(' + myObject[temp] + ')' );
+                    }
+                    var percent = ((myObject[temp])/Sum)*100;
+                    $(".result" + array[i]).css("width", percent + '%');
+                }
+            }
+            console.log("handler's qrcodeId:  "+message.data.payload.WeChatQRCodeId__c);
+            console.log("controller's qrcodeId:  "+CurrentQRCodeId);
+        });
+    });
+    
+    function sport(ele, json, changeStep)
+    {
+        ele.timer = setInterval(function()
+        {
+            var timerjudge = true;
+            for(propAttr in json) 
+            {
+                var starVal = parseInt(getStyle(ele, propAttr));
+                var distance = Math.abs(json[propAttr] - starVal);
+                var speed = Math.ceil( distance / changeStep);
+                console.log('json[propAttr] === ::  ' + json[propAttr]);
+                if (starVal < json[propAttr])
+                {
+                    console.log('starVal === : ' + starVal);
+                    starVal += speed;
+                } 
+                else
+                {
+                    starVal -= speed;
+                }
+                ele.style[propAttr] = starVal+ "px";
+            }
+            clearInterval(ele.timer);
+        }, 30);
+    }
+    
+    function getStyle(element, property)
+    {
+        var proValue = null;
+        if (!document.defaultView) {
+            proValue = element.currentStyle[property];
+        }
+        else
+        {
+            proValue = document.defaultView.getComputedStyle(element)[property];
+        }
+        return proValue;
+    }
+    
+    function showQrCode()
+    {   
+        var style = document.getElementById('qrCode').style.display;
+        if(style == 'none')
+        {
+            document.getElementById('qrCode').style.display = 'block';
+            document.getElementById('hbutton').style.display = 'none';
+        }
+        else
+        {
+            document.getElementById('qrCode').style.display = 'none';
+            document.getElementById('hbutton').style.display = 'block';
+        }
+    }
+    
+    function doLoading()
+    {
+        var style = document.getElementById('Loading').style.display;
+        if(style == 'none')
+        {
+            document.getElementById('Loading').style.display = 'block';
+        }
+    }
+    </script>
+    <style>
+        body 
+        {
+        box-sizing: border-box;
+        font-family: verdana;
+        margin: 0 auto;
+        padding: 0 10px;
+        width: 100%;
+        }
+        
+        .slds-scope .slds-button__icon
+        {
+            width: 4rem;
+            height: 3rem;
+            fill: currentColor;
+        }
+        
+        .change 
+        {
+            width:100%
+        }
+        
+        .oneRow
+        {
+            display:inline-block;
+        }
+        
+        .slds-scope a 
+        {
+        text-decoration: none;
+        transition: color .1s linear;
+        }
+        
+        .view-image-content
+        {
+            padding: 48px;
+            height: calc(100% - 60px);
+        }
+        
+        .view-image-content img 
+        {
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+            margin: 0 auto;
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .base
+        {
+            border-radius: 6px;
+            line-height: 29px;
+            width: 97%;
+            margin-bottom: 5%;
+            background: #425262;
+        }
+        
+        .voteresult
+        {   
+            border-radius: 6px;
+            margin: 2px;
+            margin-top: 5px;
+            display: block;
+            float: left;
+            width: 100%;
+            height: 35px;
+            background-color: #425262;
+            overflow: hidden;
+        }
+        
+        .displayBG
+        {   
+            width: 100%;
+            height: 100%;
+            display: block;
+            position: fixed;
+            background-color:#34485b;
+        }
+        
+        .style3
+        {
+            display: block;
+            float: left;
+            height: 35px;
+            border-radius: 6px;
+        }
+        
+        .ease 
+        {
+            transition: width 3s ease;
+        }
+        
+        .displayBG
+        {   
+            width: 100%;
+            height: 100%;
+            display: block;
+            position: fixed;
+            background-color:white;
+        }
+        
+        .slds-scope .slds-spinner 
+        {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%,-50%) rotate(90deg);
+            background-color:blue;
+        }
+        
+        .slds-scope .slds-spinner:after, .slds-scope .slds-spinner:before, .slds-scope .slds-spinner__dot-a:after, .slds-scope .slds-spinner__dot-a:before, .slds-scope .slds-spinner__dot-b:after, .slds-scope .slds-spinner__dot-b:before 
+        {
+            background: rgb(0, 112, 210);
+        }
+        
+        .font-style 
+        {
+            color: rgb(22, 50, 92);
+            font-weight: 300;
+            font-size: 1rem;
+            text-align: left;
+            line-height: 1.5;
+            white-space: nowrap;
+            padding-bottom: 1rem;
+        }
+        
+        .slds-scope .slds-icon 
+        {
+            fill: rgb(255, 183, 93);
+        }
+        
+        .displayBG
+        {   
+            width: 100%;
+            height: 100%;
+            display: block;
+            position: fixed;
+            background-color:#2c3e50;
+        }
+        .slds-scope .slds-spinner 
+        {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%) rotate(90deg);
+            background-color:blue;
+        }
+        .slds-scope .slds-spinner:after, .slds-scope .slds-spinner:before, .slds-scope .slds-spinner__dot-a:after, .slds-scope .slds-spinner__dot-a:before, .slds-scope .slds-spinner__dot-b:after, .slds-scope .slds-spinner__dot-b:before 
+        {
+            background: rgb(0, 112, 210);
+        }
+        
+        .font-style
+        {
+            color: rgb(22, 50, 92);
+            font-weight: 500;
+            font-size: 2rem;
+            text-align: left;
+            line-height: 1.5;
+            white-space: nowrap;
+            padding-bottom: 1rem;
+        }
+        .slds-scope .slds-icon 
+        {
+            fill: rgb(255, 183, 93);
+        }
+        
+    </style>
+    
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+    <apex:includeScript value="{!$Resource.JqueryFile}"/>
+    <body style="background-color:#2c3e50;">
+        <div class="view-image-content displayBG" id="qrCode" style="z-index: 9000;
+            transition-duration: .4s;
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: rgba(0,0,0,.8);
+            display:none;">
+            <button class="slds-button slds-button_neutral" onclick="showQrCode();" style="background-color: #425262;
+            border-bottom-color:#425262;
+            border-right-color:  #425262;
+            color: #999;
+            position:fixed;
+            bottom:0; 
+            left:1%;
+            margin-bottom: 1%;">
+                二维码
+            </button>
+            <apex:image url="/servlet/servlet.FileDownload?file={!AttachmentId}"/> 
+        </div>
+        
+        <div class="overlayBackground displayBG" id="Loading" style="display:none;">
+            <div class="demo-only" >
+                <div role="status" class="slds-spinner slds-spinner_medium" >
+                    <span class="slds-assistive-text" >Loading</span>
+                    <div class="slds-spinner__dot-a">
+                    </div>
+                    <div class="slds-spinner__dot-b">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="background-color:#34485b;
+            border-bottom-color:#34485b;
+            width:100%;">
+            <div>
+                <span style="font-size:37px;color:#ffbd2b;">
+                    问题{!CurrentNum}:&nbsp;
+                </span>
+                <span style="font-size:37px;color:white;">
+                    {!CurrentQuestion.Charket__Question__c}
+                </span>
+            </div>
+            <button class="slds-button slds-button_neutral" id="hbutton" onclick="showQrCode();" style="background-color: #425262;border-bottom-color:#425262;border-right-color:  #425262;color: #999;position:fixed; bottom:0; left:1; margin-bottom: 1%;">
+                二维码
+            </button>
+        </div>
+        <div>
+            <table>
+                <apex:variable value="{!1}" var="i" id="indexVar" />
+                <apex:repeat value="{!CurrentQuestion.CharKet__SurveyAnswers__r}" var="answer">
+                    <tr>
+                        <td style="padding-left: 6%;padding-right: 0%;width: 100%;padding-bottom: 4%;padding-top: 3%;">
+                            <span style="font-size:34px;" class="font-style colorSpanFont">{!i}.&nbsp;{!answer.Charket__Choice__c}</span>
+                            <div class="voteresult">
+                                <em id="span1" class="style3 resulta{!i} colorEm ease">
+                                </em>
+                            </div>
+                        </td>
+                        <td style="padding-left: 2%;">
+                            <span class="ratea{!i} font-style colorSpan" style="font-size: 35px;display:  block;width: 219px;padding-top: 20%;padding-bottom: 2%;color:white;">0%</span>
+                        </td>
+                    </tr>
+                    <apex:variable var="i" value="{!i + 1}" />
+                </apex:repeat>
+            </table>
+        </div>
+    </body>
+        <div style="position:fixed; bottom:0; right:0;">
+            <apex:outputPanel rendered="{!!IsFirstQuestion}" styleClass="oneRow">
+                <span>
+                    <div style="color:gray;">
+                        <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true" >
+                            <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#chevronleft')}"></use> 
+                        </svg>
+                    </div>
+                </span>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!IsFirstQuestion}" styleClass="oneRow">
+                <span>
+                    <a onclick="doPrevious();doLoading();">
+                        <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                            <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#chevronleft')}"></use> 
+                        </svg>
+                    </a>
+                </span>
+            </apex:outputPanel>        
+            <apex:outputPanel rendered="{!IsLastQuestion}" styleClass="oneRow">
+                <span>
+                    <a onclick="doNext();doLoading();">
+                        <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                            <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#chevronright')}"></use> 
+                        </svg>
+                    </a>
+                </span> 
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!!IsLastQuestion}" styleClass="oneRow">
+                <span>
+                    <div style="color:gray;">
+                        <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                            <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#chevronright')}"></use> 
+                        </svg>
+                    </div>
+                </span>  
+            </apex:outputPanel>
+        </div>
+</html>
+<apex:form id="form">
+     <apex:actionFunction name="doNext" action="{!next}"></apex:actionFunction>
+     <apex:actionFunction name="doPrevious" action="{!previous}"></apex:actionFunction>
+</apex:form>
+</apex:page>

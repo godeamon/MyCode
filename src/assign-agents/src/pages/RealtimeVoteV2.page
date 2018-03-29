@@ -1,0 +1,365 @@
+<apex:page controller="RealTimeVoteController" tabStyle="Charket__Survey__c" lightningStyleSheets="true"  sidebar="false" showChat="false" showHeader="false">
+    <script src="{!URLFOR($Resource.cometd,'cometd/cometd.js')}"/>
+    <script src="{!URLFOR($Resource.cometd,'cometd/jquery-1.5.1.js')}"/>
+    <script src="{!URLFOR($Resource.cometd,'cometd/json2.js')}"/>
+    <script src="{!URLFOR($Resource.cometd,'cometd/jquery.cometd.js')}"/>
+    <apex:slds />
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+    <apex:includeScript value="{!$Resource.JqueryFile}"/>
+    <script>
+        var CurrentQRCodeId = '{!QRCodeId}';
+        var CurrentNum = '{!CurrentNum}';
+        var QuestionsCount = '{!QuestionsCount}';
+        var CurrentAnswerText = '{!CurrentAnswerText}';
+        var CurrentQuestionType = '{!CurrentQuestionType}';
+        var SurveyId = '{!SurveyId}';
+        var Index = '{!Index}';
+        var Sum = 0;    
+        var m = new Map();
+        var answersRates = '{!answersRates}';
+        var colorList = ["#df5f3b","#39acdd","#26a48b","#815cb4","#81a41c","#5e92fc","#ffbd2b"];
+    
+        $(document).ready(function() 
+        {
+            var browser_width = $(document.body).width();
+            $(".slds-is-fixed").css("width", browser_width);
+            var totalWidth = $(".base").width();
+            if(answersRates != null && answersRates != '')
+            { 
+              console.log('@@@answersRates' + answersRates);
+              var answers =  JSON.parse(answersRates);
+              var arr = [];
+              for(var event in answers)
+              {
+                  var dataCopy = answers[event]
+                  arr.push(dataCopy)
+              }
+              for(var i = 1; i <= arr.length; i ++)
+              {
+                  console.log('i' + arr[i -1]);
+                  $(".p" + i).text(arr[i - 1]*100 + '%');
+                  $(".result" + i).css("width", arr[i - 1]*100 + "%");
+                  $(".result" + i).css("width", arr[i - 1]*100 + "%");
+                  var showColor = getColorByRandom(colorList);
+                  $(".result" + i).css("background", showColor);
+                  $("#result" + i).css("color", showColor);
+              }
+            }
+
+            $.cometd.init({
+              url: window.location.protocol+'//'+window.location.hostname+'/cometd/41.0/',
+              requestHeaders: { Authorization: 'OAuth {!$Api.Session_ID}'}
+            });
+
+            $.cometd.subscribe('/event/SurveyResponse__e', function(message) {
+              var CurrentQuestion = '{!CurrentQuestionText}';
+              if(message.data.payload.WeChatQRCodeId__c == CurrentQRCodeId)
+              {
+                  var outOfIndex = false;
+                  /*if(message.data.payload.SurveyResponse__c > Index)
+                  {
+                      outOfIndex = true;
+                  }*/
+
+
+                  Visualforce.remoting.Manager.invokeAction(
+                      '{!$RemoteAction.RealTimeVoteController.sendMessage}',SurveyId,
+                      message.data.payload.WeChatFollowerId__c,CurrentQuestion,CurrentAnswerText,outOfIndex,message.data.payload.SurveyResponse__c,false,Index,CurrentQuestionType,CurrentNum,QuestionsCount,
+                      function(result, event) {
+                          console.log("result:  "+result);
+                          console.log("message.data.payload.SurveyResponse__c:  "+message.data.payload.SurveyResponse__c);
+                          console.log("Index:  "+Index);
+                          if(message.data.payload.WeChatQRCodeId__c == CurrentQRCodeId && result)
+                          { 
+                              if(message.data.payload.SurveyResponse__c != 'NoAnswer')
+                              {	
+                                console.log('SurveyResponse__c.split:::::'+message.data.payload.SurveyResponse__c.split('，'));
+                                var strs= new Array();
+                                strs = message.data.payload.SurveyResponse__c.split('，');
+                                  for(var i=0; i < strs.length; i++)
+                                  {		
+                                      //console.log("question ==q====u===e==s===t==" + m.get(message.data.payload.SurveyResponse__c.split('，')[question]) );
+                                      console.log('message.data.payload.SurveyResponse__c.split[question]:::'+strs[i]);
+                                      if(strs[i] != null && strs[i] != '')
+                                      {
+                                        Sum += 1;
+                                        if(m.get(strs[i]) != null)
+                                        {
+                                          m.set(strs[i], m.get(strs[i]) + 1);             
+                                        }
+                                        else
+                                        {
+                                            m.set(strs[i], 1); 
+                                        }
+                                        
+                                        var countNumber = m.get(strs[i]).size;
+                                        console.log("totalWidth : " + totalWidth);
+                                        
+                                        for (let key of m.keys())
+                                        { 
+                                            console.log('every key ===' + key);
+                                            $(".p" + key).text(((m.get(key)/Sum) * 100).toFixed(2) + '%');
+                                            var currentColor = $(".result" + key).css("background");
+                                            console.log("width ==============: " + (m.get(key)/Sum));
+                                            if((m.get(key)/Sum) == 1)
+                                            {
+                                                $(".result" + key).css("width", (m.get(key)/Sum)*97.8 + "%"); 
+                                            }
+                                            else
+                                            {
+                                                $(".result" + key).css("width", (m.get(key)/Sum)*100 + "%");   
+                                            }
+                                            var color = RGBtoHEX($('.result' + key).css("background"));
+                                            
+                                            if(color == '#425262')
+                                            {
+                                                var showColor = getColorByRandom(colorList);
+                                                $(".result" + key).css("background", showColor);
+                                                $("#result" + key).css("color", showColor);
+                                            }
+                                            console.log("m.get(key)/Sum)*totalWidth---@@@" + (m.get(key)/Sum)*totalWidth);
+                                        }
+                                      }
+                                  }
+                              }                                                        
+                          }
+                      });
+              }
+              console.log("handler's qrcodeId:  "+message.data.payload.WeChatQRCodeId__c);
+              console.log("controller's qrcodeId:  "+CurrentQRCodeId);
+            });
+            });
+    
+
+    function getColorByRandom(colorList)
+    { 
+        var colorIndex = Math.floor(Math.random()*colorList.length); 
+        var color = colorList[colorIndex]; 
+        colorList.splice(colorIndex, 1); 
+        return color; 
+    } 
+
+    function showQrCode()
+    {   
+        var style = document.getElementById('qrCode').style.display;
+        if(style == 'none')
+        {
+            document.getElementById('qrCode').style.display = 'block';      
+        }
+        else
+        {
+            document.getElementById('qrCode').style.display = 'none';   
+        }
+    }
+    
+    
+    function toHex(N) 
+    {
+        if (N==null) return "00";
+        N=parseInt(N); 
+        if (N==0 || isNaN(N)) return "00";
+        N = Math.max(0,N); N=Math.min(N,255); 
+        N = Math.round(N);
+        return "0123456789abcdef".charAt((N-N%16)/16) + "0123456789abcdef".charAt(N%16);
+    }
+    
+    function RGBtoHEX(str)
+    {
+        if (str.substring(0, 3) == 'rgb') 
+        {
+            var arr = str.split(",");
+            var r = arr[0].replace('rgb(','').trim(), g = arr[1].trim(), b = arr[2].replace(')','').trim();
+            var hex = [
+                toHex(r),
+                toHex(g),
+                toHex(b)
+            ];
+            return "#" + hex.join('');
+        }
+        else
+        {
+            return str;
+        }
+    }
+    
+    </script>
+    <style>
+        body 
+        {
+        box-sizing: border-box;
+        font-family: verdana;
+        margin: 0 auto;
+        padding: 0 10px;
+        width: 100%;
+        }
+        
+        h1 
+        {
+        margin-bottom: 0;   
+        }
+        
+        p 
+        {
+        margin-bottom: 40px;
+        }
+        
+        .base
+        {
+        border-radius: 6px;
+        line-height: 29px;
+        width: 97%;
+        margin-bottom: 5%;
+        background: #425262;
+        }
+        
+        .base1
+        {
+        border-radius: 6px;
+        line-height: 26px;
+        background: #425262;
+        }
+        
+        .ease 
+        {
+        transition: width 3s ease;
+        }
+        
+        .bPageBlock 
+        {
+        background-color: red;
+        }
+        .slds-scope .slds-button__icon 
+        {
+        width: 4rem;
+        height: 3rem;
+        fill: currentColor;
+        }
+        .oneRow
+        {
+        display:inline-block;
+        }
+        
+        .slds-scope a 
+        {
+        
+        text-decoration: none;
+        transition: color .1s linear;
+        }
+        
+        .view-image-content
+        {
+        padding: 48px;
+        height: calc(100% - 60px);
+        }
+        
+        .view-image-content img 
+        {
+        display: block;
+        max-width: 100%;
+        max-height: 100%;
+        margin: 0 auto;
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+        }
+        
+        .displayBG
+        {   
+        width: 100%;
+        height: 100%;
+        display: block;
+        position: fixed;
+        background-color:#34485b;
+        }
+        
+    </style>
+    <title>Real-time Vote</title>
+    <body style="background-color:#2c3e50;">
+    <apex:form >
+        <apex:actionFunction name="doNext" action="{!next}"></apex:actionFunction>
+        <apex:actionFunction name="doPrevious" action="{!previous}"></apex:actionFunction>
+    </apex:form>
+    <div class="view-image-content displayBG" id="qrCode" style="display:none;">
+        <apex:image url="/servlet/servlet.FileDownload?file={!AttachmentId}"/> 
+    </div>
+    <div>
+        <table id="maintable">
+            <thead >
+                <tr>
+                    <div class="slds-is-fixed" >
+                        <div class="slds-page-header" style="background-color:#34485b;border-bottom-color:#34485b;">
+                            <div class="slds-media">
+                                <div class="slds-media__body">
+                                    <h1 class="slds-page-header__title slds-truncate slds-align-middle"><span style="font-size:37px;color:#ffbd2b;">问题{!CurrentNum}:&nbsp;</span><span style="font-size:37px;color:white;white-space: pre-wrap;">{!CurrentQuestion.Charket__Question__c}</span></h1>
+                                </div>
+                                <button class="slds-button slds-button_neutral" onclick="showQrCode();" style="background-color: #425262;border-bottom-color:#425262;border-right-color:  #425262;color: #999;">
+                                    二维码
+                                </button>
+                            </div>
+                        </div>
+                    </div> 
+                </tr>
+            </thead>
+            <tbody>
+                <apex:variable value="{!1}" var="i" id="indexVar" />
+                <apex:repeat value="{!CurrentQuestion.CharKet__SurveyAnswers__r}" var="answer">
+                    <tr>
+                        <td>
+                            <div class="itemList" style="{!if(i == 1 , 'padding-top: 10%;' , '')}padding-left: 10%;padding-right: 10%;color:white;" >
+                                <br/>
+                                <p style="font-size:34px;" id="result{!i}">{!i}.&nbsp;{!answer.Charket__Choice__c}</p>
+                                <div class="base oneRow"  style="height:35px;">
+                                    <p style="font-size:28px;padding-top: 8px;color:#425262;" class="p{!i}">0</p>
+                                </div>
+                                <div class="base1 oneRow result{!i}" style="margin-left:-98%;height: 35px;padding-top: 2px;">
+                                    <p style="font-size:35px;padding-top: 6px;" class="p{!i}">0 %</p>
+                                </div>
+                                <apex:variable var="i" value="{!i + 1}" />
+                            </div>
+                        </td>
+                    </tr>	
+                </apex:repeat>
+            </tbody>
+        </table>
+    </div>
+    <div style="position:fixed; bottom:0; right:0;">
+        <apex:outputPanel rendered="{!!IsFirstQuestion}" styleClass="oneRow">
+            <span>
+                <div style="color:gray;">
+                    <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true" >
+                        <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#chevronleft')}"></use> 
+                    </svg>
+                </div>
+            </span>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!IsFirstQuestion}" styleClass="oneRow">
+            <span>
+                <a onclick="doPrevious();">
+                    <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                        <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#chevronleft')}"></use> 
+                    </svg>
+                </a>
+            </span>
+        </apex:outputPanel>        
+        <apex:outputPanel rendered="{!IsLastQuestion}" styleClass="oneRow">
+            <span>
+                <a onclick="doNext();">
+                    <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                        <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#chevronright')}"></use> 
+                    </svg>
+                </a>
+            </span> 
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!!IsLastQuestion}" styleClass="oneRow">
+            <span>
+                <div style="color:gray;">
+                    <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                        <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#chevronright')}"></use> 
+                    </svg>
+                </div>
+            </span>  
+        </apex:outputPanel>
+    </div>  
+    </body>
+</html>
+</apex:page>

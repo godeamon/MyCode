@@ -1,0 +1,102 @@
+<apex:page controller="VoteSettingController" tabStyle="Charket__Survey__c" action="{!validateSettings}">
+<apex:sectionHeader title="{!SurveyName}" subtitle="Live Polling Settings"/>
+    <body>
+    <apex:form >
+        <apex:pageBlock title="Live Polling Settings" id="block" mode="edit" rendered="{! !IsSetting}">
+            <apex:pageBlockSection showHeader="true" title="Information" collapsible="false">
+                <apex:pageBlockSectionItem >
+                     <apex:outputLabel value="选择投票二维码" for="qrcoid" />
+                     <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:selectList id="qrcoid" value="{!QrCodeId}" size="1">
+                            <apex:selectOptions value="{!QrCodes}"/>
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="选择是否显示投票结果人数" for="enableTransition" />
+                    <apex:outputPanel >
+                        <apex:inputCheckbox id="enableTransition" value="{!IsShowPersonNum}" />
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                     <apex:outputLabel value="选择活动" for="CampaignId" >
+                    </apex:outputLabel>
+                     <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:selectList id="CampaignId" value="{!CampaignId}" size="1">
+                            <apex:selectOptions value="{!Campaigns}"/>
+                            <apex:actionSupport event="onchange" rerender="block" status="StatusId" action="{!getCampaignMemberStatuses}"/>
+                        </apex:selectList>
+                        <apex:actionStatus id="StatusId" >
+                            <apex:facet name="start" >
+                                <img src="/img/loading.gif" />                    
+                            </apex:facet>
+                        </apex:actionStatus>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="选择发送投票二维码的成员状态" for="Status" />
+                    <apex:outputPanel >
+                    <apex:repeat value="{!Statuses}" var="status">
+                        <apex:outputPanel >
+                            <apex:inputCheckbox value="{!status.IsChecked}" id="Status" />
+                            <apex:outputLabel value="{!status.Status}" style="text-align: right;font-size: 91%;font-weight: bold;color: #4a4a56;" for="Status"/>
+                            </apex:outputPanel>
+                    </apex:repeat>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons >
+                <apex:commandButton value="保存" action="{!insertWeChatMessage}"/>
+                <apex:commandButton value="取消" action="{!cancel}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+
+        <apex:pageBlock title="Live Polling Settings" id="block2" mode="edit" rendered="{!IsSetting}">
+            <apex:pageBlockSection showHeader="true" title="Information" collapsible="false">
+                <apex:pageBlockSectionItem >
+                     <apex:outputLabel value="投票二维码" for="qrcoid" />
+                     <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:outputText value="{!QrCodeName}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="是否显示投票结果人数" for="enableTransition" />
+                    <apex:outputPanel >
+                        <!-- <apex:inputCheckbox id="enableTransition" value="{!IsShowPersonNum}" onclick="return false" rendered="false"/> -->
+                        <img src="/img/checkbox_{!IF(IsShowPersonNum, '', 'un')}checked.gif"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                     <apex:outputLabel value="活动" for="CampaignId" >
+                    </apex:outputLabel>
+                     <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:outputText value="{!CampaignName}"/>
+                        <apex:actionStatus id="StatusId" >
+                            <apex:facet name="start" >
+                                <img src="/img/loading.gif" />                    
+                            </apex:facet>
+                        </apex:actionStatus>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="发送投票二维码的成员状态" for="Status" />
+                    <apex:outputPanel >
+                        <apex:outputText value="{!StatusesStr}"/>
+                    <!-- <apex:repeat value="{!Statuses}" var="status">
+                        <apex:outputPanel >
+                            <apex:inputCheckbox value="{!status.IsChecked}" id="Status" disabled="true"/>
+                            <apex:outputLabel value="{!status.Status}" style="text-align: right;font-size: 91%;font-weight: bold;color: #4a4a56;" for="Status"/>
+                            </apex:outputPanel>
+                    </apex:repeat> -->
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons >
+                <apex:commandButton value="设置" action="{!edit}"/>
+                <apex:commandButton value="开始" action="{!beganToVote}"/>
+                <apex:commandButton value="发送二维码" action="{!sendQRCode}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+    </body>
+</apex:page>
